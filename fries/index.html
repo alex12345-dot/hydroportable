@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrittoMisto - Recensioni Patatine Fritte</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #f5a623 0%, #f7c948 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(245, 166, 35, 0.4);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon { font-size: 40px; }
+
+        .logo-text h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1a1a2e;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text p {
+            font-size: 13px;
+            color: #5a3e00;
+            font-weight: 500;
+        }
+
+        .btn-add {
+            background: #1a1a2e;
+            color: #f7c948;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-add:hover {
+            background: #0f0f1a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 14px;
+            padding: 16px 22px;
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #f5a623;
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filters input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            background: white;
+            transition: border-color 0.2s;
+        }
+
+        .filters input[type="text"]:focus { border-color: #f5a623; }
+
+        .filters select {
+            padding: 10px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .filters select:focus { border-color: #f5a623; }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .review-card {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .review-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-top {
+            background: linear-gradient(135deg, #f5a623 0%, #f7c948 100%);
+            padding: 20px;
+            position: relative;
+        }
+
+        .card-rating {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .card-place-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+            padding-right: 70px;
+        }
+
+        .card-address {
+            font-size: 13px;
+            color: #5a3e00;
+        }
+
+        .card-body { padding: 18px 20px; }
+
+        .stars {
+            display: flex;
+            gap: 3px;
+            margin-bottom: 10px;
+        }
+
+        .star { font-size: 18px; }
+        .star.filled { color: #f5a623; }
+        .star.empty { color: #ddd; }
+
+        .card-comment {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+
+        .tag {
+            background: #fff8e6;
+            color: #b07800;
+            border: 1px solid #f5e0a0;
+            border-radius: 12px;
+            padding: 3px 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .card-date { font-size: 11px; color: #aaa; }
+
+        .card-actions { display: flex; gap: 8px; }
+
+        .btn-icon {
+            background: none;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 5px 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover {
+            background: #fff0cc;
+            border-color: #f5a623;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state .empty-icon { font-size: 64px; margin-bottom: 20px; }
+
+        .empty-state h3 {
+            font-size: 22px;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p { font-size: 15px; color: #aaa; }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(30px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.open .modal { transform: translateY(0); }
+
+        .modal h2 {
+            font-size: 22px;
+            margin-bottom: 24px;
+            color: #1a1a2e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group { margin-bottom: 18px; }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 7px;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus { border-color: #f5a623; }
+
+        .form-group textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .star-rating-input { display: flex; gap: 8px; }
+
+        .star-rating-input .star-btn {
+            font-size: 32px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #ddd;
+            transition: color 0.15s, transform 0.15s;
+            line-height: 1;
+        }
+
+        .star-rating-input .star-btn:hover,
+        .star-rating-input .star-btn.active {
+            color: #f5a623;
+            transform: scale(1.1);
+        }
+
+        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; }
+
+        .tag-toggle {
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tag-toggle.selected {
+            background: #fff8e6;
+            border-color: #f5a623;
+            color: #b07800;
+            font-weight: 600;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-submit {
+            flex: 1;
+            background: linear-gradient(135deg, #f5a623 0%, #f7c948 100%);
+            color: #1a1a2e;
+            border: none;
+            padding: 13px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 166, 35, 0.4);
+        }
+
+        .btn-cancel {
+            background: #f5f5f5;
+            color: #666;
+            border: none;
+            padding: 13px 20px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-cancel:hover { background: #eee; }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #1a1a2e;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 2000;
+            transition: transform 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        @media (max-width: 600px) {
+            header { padding: 16px 20px; }
+            .logo-text h1 { font-size: 22px; }
+            .btn-add span:last-child { display: none; }
+            .main { padding: 20px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <div class="logo-icon">🍟</div>
+        <div class="logo-text">
+            <h1>FrittoMisto</h1>
+            <p>Le migliori patatine fritte d'Italia</p>
+        </div>
+    </div>
+    <button class="btn-add" onclick="openModal()">
+        <span>+</span>
+        <span>Nuova Recensione</span>
+    </button>
+</header>
+
+<div class="main">
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="value" id="statTotal">0</div>
+            <div class="label">Posti Recensiti</div>
+        </div>
+        <div class="stat-card">
+            <div class="value" id="statAvg">–</div>
+            <div class="label">Voto Medio</div>
+        </div>
+        <div class="stat-card">
+            <div class="value" id="statTop">–</div>
+            <div class="label">Voto Più Alto</div>
+        </div>
+    </div>
+
+    <div class="filters">
+        <input type="text" id="searchInput" placeholder="Cerca un posto..." oninput="renderReviews()">
+        <select id="sortSelect" onchange="renderReviews()">
+            <option value="newest">Più recenti</option>
+            <option value="rating-desc">Voto: alto → basso</option>
+            <option value="rating-asc">Voto: basso → alto</option>
+            <option value="az">A → Z</option>
+        </select>
+        <select id="filterTag" onchange="renderReviews()">
+            <option value="">Tutti i tipi</option>
+        </select>
+    </div>
+
+    <div class="reviews-grid" id="reviewsGrid"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+    <div class="modal">
+        <h2>🍟 <span id="modalTitle">Aggiungi Recensione</span></h2>
+
+        <div class="form-group">
+            <label>Nome del posto *</label>
+            <input type="text" id="inputName" placeholder="Es. Kebabbaro da Mario">
+        </div>
+
+        <div class="form-group">
+            <label>Indirizzo</label>
+            <input type="text" id="inputAddress" placeholder="Es. Via Roma 12, Milano">
+        </div>
+
+        <div class="form-group">
+            <label>Voto *</label>
+            <div class="star-rating-input" id="starInput">
+                <button class="star-btn" type="button" onclick="setRating(1)">★</button>
+                <button class="star-btn" type="button" onclick="setRating(2)">★</button>
+                <button class="star-btn" type="button" onclick="setRating(3)">★</button>
+                <button class="star-btn" type="button" onclick="setRating(4)">★</button>
+                <button class="star-btn" type="button" onclick="setRating(5)">★</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Tipo di posto</label>
+            <div class="tags-container" id="tagPicker">
+                <span class="tag-toggle" onclick="toggleTag(this, 'Fast Food')">Fast Food</span>
+                <span class="tag-toggle" onclick="toggleTag(this, 'Friggitoria')">Friggitoria</span>
+                <span class="tag-toggle" onclick="toggleTag(this, 'Kebab')">Kebab</span>
+                <span class="tag-toggle" onclick="toggleTag(this, 'Ristorante')">Ristorante</span>
+                <span class="tag-toggle" onclick="toggleTag(this, 'Pub')">Pub</span>
+                <span class="tag-toggle" onclick="toggleTag(this, 'Burger')">Burger</span>
+                <span class="tag-toggle" onclick="toggleTag(this, 'Pesce & Chip')">Pesce & Chip</span>
+                <span class="tag-toggle" onclick="toggleTag(this, 'Street Food')">Street Food</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Commento</label>
+            <textarea id="inputComment" placeholder="Com'erano le patatine? Croccanti? Salate al punto giusto? L'olio era fresco?"></textarea>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal()">Annulla</button>
+            <button class="btn-submit" onclick="saveReview()">Salva Recensione</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    let reviews = JSON.parse(localStorage.getItem('fritto-misto-reviews') || '[]');
+    let currentRating = 0;
+    let editingId = null;
+    let selectedTags = [];
+
+    function save() {
+        localStorage.setItem('fritto-misto-reviews', JSON.stringify(reviews));
+    }
+
+    function starsHTML(rating) {
+        return [1,2,3,4,5].map(i =>
+            `<span class="star ${i <= rating ? 'filled' : 'empty'}">★</span>`
+        ).join('');
+    }
+
+    function formatDate(ts) {
+        return new Date(ts).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function updateStats() {
+        const total = reviews.length;
+        document.getElementById('statTotal').textContent = total;
+        if (total === 0) {
+            document.getElementById('statAvg').textContent = '–';
+            document.getElementById('statTop').textContent = '–';
+            return;
+        }
+        const avg = reviews.reduce((s, r) => s + r.rating, 0) / total;
+        const top = Math.max(...reviews.map(r => r.rating));
+        document.getElementById('statAvg').textContent = avg.toFixed(1);
+        document.getElementById('statTop').textContent = top + '/5';
+    }
+
+    function updateTagFilter() {
+        const all = new Set();
+        reviews.forEach(r => (r.tags || []).forEach(t => all.add(t)));
+        const sel = document.getElementById('filterTag');
+        const current = sel.value;
+        sel.innerHTML = '<option value="">Tutti i tipi</option>';
+        [...all].sort().forEach(t => {
+            const o = document.createElement('option');
+            o.value = t;
+            o.textContent = t;
+            if (t === current) o.selected = true;
+            sel.appendChild(o);
+        });
+    }
+
+    function renderReviews() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const sort = document.getElementById('sortSelect').value;
+        const tagFilter = document.getElementById('filterTag').value;
+
+        let filtered = reviews.filter(r => {
+            const matchSearch = r.name.toLowerCase().includes(search) ||
+                (r.address || '').toLowerCase().includes(search) ||
+                (r.comment || '').toLowerCase().includes(search);
+            const matchTag = !tagFilter || (r.tags || []).includes(tagFilter);
+            return matchSearch && matchTag;
+        });
+
+        filtered.sort((a, b) => {
+            if (sort === 'newest') return b.date - a.date;
+            if (sort === 'rating-desc') return b.rating - a.rating;
+            if (sort === 'rating-asc') return a.rating - b.rating;
+            if (sort === 'az') return a.name.localeCompare(b.name);
+            return 0;
+        });
+
+        const grid = document.getElementById('reviewsGrid');
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">🍟</div>
+                    <h3>${reviews.length === 0 ? 'Nessuna recensione ancora!' : 'Nessun risultato'}</h3>
+                    <p>${reviews.length === 0 ? 'Aggiungi la tua prima recensione sulle patatine fritte.' : 'Prova a cambiare i filtri di ricerca.'}</p>
+                </div>`;
+            return;
+        }
+
+        grid.innerHTML = filtered.map(r => `
+            <div class="review-card">
+                <div class="card-top">
+                    <div class="card-rating">★ ${r.rating}/5</div>
+                    <div class="card-place-name">${escapeHtml(r.name)}</div>
+                    ${r.address ? `<div class="card-address">📍 ${escapeHtml(r.address)}</div>` : ''}
+                </div>
+                <div class="card-body">
+                    <div class="stars">${starsHTML(r.rating)}</div>
+                    ${r.comment ? `<div class="card-comment">${escapeHtml(r.comment)}</div>` : ''}
+                    <div class="card-meta">
+                        <div>
+                            ${(r.tags || []).length ? `<div class="card-tags">${r.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+                            <div class="card-date">${formatDate(r.date)}</div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-icon" title="Modifica" onclick="editReview('${r.id}')">✏️</button>
+                            <button class="btn-icon" title="Elimina" onclick="deleteReview('${r.id}')">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function escapeHtml(s) {
+        return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function setRating(n) {
+        currentRating = n;
+        document.querySelectorAll('#starInput .star-btn').forEach((btn, i) => {
+            btn.classList.toggle('active', i < n);
+        });
+    }
+
+    function toggleTag(el, tag) {
+        el.classList.toggle('selected');
+        if (el.classList.contains('selected')) {
+            selectedTags.push(tag);
+        } else {
+            selectedTags = selectedTags.filter(t => t !== tag);
+        }
+    }
+
+    function openModal(id = null) {
+        editingId = id;
+        currentRating = 0;
+        selectedTags = [];
+        document.querySelectorAll('#starInput .star-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#tagPicker .tag-toggle').forEach(b => b.classList.remove('selected'));
+
+        if (id) {
+            const r = reviews.find(x => x.id === id);
+            document.getElementById('modalTitle').textContent = 'Modifica Recensione';
+            document.getElementById('inputName').value = r.name;
+            document.getElementById('inputAddress').value = r.address || '';
+            document.getElementById('inputComment').value = r.comment || '';
+            setRating(r.rating);
+            selectedTags = [...(r.tags || [])];
+            document.querySelectorAll('#tagPicker .tag-toggle').forEach(btn => {
+                if (selectedTags.includes(btn.textContent)) btn.classList.add('selected');
+            });
+        } else {
+            document.getElementById('modalTitle').textContent = 'Aggiungi Recensione';
+            document.getElementById('inputName').value = '';
+            document.getElementById('inputAddress').value = '';
+            document.getElementById('inputComment').value = '';
+        }
+
+        document.getElementById('modalOverlay').classList.add('open');
+    }
+
+    function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('open');
+        editingId = null;
+    }
+
+    function handleOverlayClick(e) {
+        if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    function saveReview() {
+        const name = document.getElementById('inputName').value.trim();
+        const address = document.getElementById('inputAddress').value.trim();
+        const comment = document.getElementById('inputComment').value.trim();
+
+        if (!name) { showToast('Inserisci il nome del posto!'); return; }
+        if (!currentRating) { showToast('Seleziona un voto!'); return; }
+
+        if (editingId) {
+            const idx = reviews.findIndex(r => r.id === editingId);
+            reviews[idx] = { ...reviews[idx], name, address, comment, rating: currentRating, tags: [...selectedTags] };
+            showToast('Recensione aggiornata!');
+        } else {
+            reviews.unshift({
+                id: Date.now().toString(),
+                name, address, comment,
+                rating: currentRating,
+                tags: [...selectedTags],
+                date: Date.now()
+            });
+            showToast('Recensione aggiunta!');
+        }
+
+        save();
+        updateStats();
+        updateTagFilter();
+        renderReviews();
+        closeModal();
+    }
+
+    function editReview(id) { openModal(id); }
+
+    function deleteReview(id) {
+        if (!confirm('Eliminare questa recensione?')) return;
+        reviews = reviews.filter(r => r.id !== id);
+        save();
+        updateStats();
+        updateTagFilter();
+        renderReviews();
+        showToast('Recensione eliminata.');
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    updateStats();
+    updateTagFilter();
+    renderReviews();
+</script>
+
+</body>
+</html>
