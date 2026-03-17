@@ -289,6 +289,29 @@
             font-size: 13px;
             font-weight: 700;
         }
+        .pdf-btn {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 18px;
+            background: #1e3c72;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .pdf-btn:hover { background: #2a5298; }
+        @media print {
+            body { background: white !important; }
+            .back-button, .calc-button, .menu-button, .pdf-btn,
+            .header, .footer-logo, #about-page, .mode-button { display: none !important; }
+            .page { display: none !important; }
+            .page.print-active { display: block !important; }
+            .results { display: block !important; border: 1px solid #ccc; }
+            .container { box-shadow: none; padding: 20px; }
+        }
     </style>
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4832555948770318" crossorigin="anonymous"></script>
@@ -394,6 +417,11 @@
                 <button class="menu-button" onclick="showPage('energia-consumata')">🔋 Energia Consumata</button>
                 <button class="menu-button" onclick="showPage('conversioni')">🔄 Conversioni Unità di Misura</button>
                 <button class="menu-button" onclick="showPage('reti-idriche-menu')">🔵 Reti Idriche</button>
+                <button class="menu-button" onclick="showPage('colpo-ariete')">💥 Colpo d'Ariete</button>
+                <button class="menu-button" onclick="showPage('svuotamento-serbatoio')">⏱️ Svuotamento Serbatoio</button>
+                <button class="menu-button" onclick="showPage('curva-durata')">📊 Curva di Durata Portate</button>
+                <button class="menu-button" onclick="showPage('bacino-idrografico')">🌧️ Bacino Idrografico</button>
+                <button class="menu-button" onclick="showPage('numero-reynolds')">🔬 Numero di Reynolds</button>
             </div>
         </div>
         <!-- SOTTO-MENU CALCOLO PORTATA -->
@@ -1602,6 +1630,204 @@
             <div id="dc-results" class="results">
                 <div class="result-value" id="dc-result"></div>
                 <div style="margin-top: 15px; font-size: 14px; color: #555;" id="dc-details"></div>
+            </div>
+        </div>
+
+        <!-- COLPO D'ARIETE -->
+        <div id="colpo-ariete" class="page">
+            <button class="back-button" onclick="showPage('main-menu')">← Indietro</button>
+            <h2>💥 Colpo d'Ariete</h2>
+            <div class="info-box" style="margin-top: 20px;">
+                📐 <strong>Formula di Joukowsky:</strong><br>
+                ΔP = ρ × c × Δv<br><br>
+                <strong>Celerità dell'onda:</strong><br>
+                c = √(K/ρ) / √(1 + K·D/(E·s))<br><br>
+                <strong>Dove:</strong><br>
+                • ΔP = sovrapressione [Pa / bar]<br>
+                • ρ = densità acqua = 1000 kg/m³<br>
+                • c = celerità onda di pressione [m/s]<br>
+                • Δv = variazione di velocità [m/s]<br>
+                • K = modulo bulk acqua ≈ 2.1×10⁹ Pa<br>
+                • E = modulo elastico condotta [Pa]<br>
+                • D = diametro interno [m], s = spessore parete [m]
+            </div>
+            <div class="input-group">
+                <label>Diametro interno D [mm]</label>
+                <input type="number" id="ca-D" placeholder="es. 200" step="any">
+            </div>
+            <div class="input-group">
+                <label>Spessore parete s [mm]</label>
+                <input type="number" id="ca-s" placeholder="es. 10" step="any">
+            </div>
+            <div class="input-group">
+                <label>Velocità iniziale v [m/s]</label>
+                <input type="number" id="ca-v" placeholder="es. 1.5" step="any">
+            </div>
+            <div class="input-group">
+                <label>Modulo elastico condotta E [GPa]</label>
+                <select id="ca-E-mat" onchange="document.getElementById('ca-E').value=this.value">
+                    <option value="">-- Seleziona materiale --</option>
+                    <option value="210">Acciaio (210 GPa)</option>
+                    <option value="110">Ghisa (110 GPa)</option>
+                    <option value="70">Alluminio (70 GPa)</option>
+                    <option value="3">HDPE (3 GPa)</option>
+                    <option value="3.5">PVC (3.5 GPa)</option>
+                    <option value="40">Calcestruzzo (40 GPa)</option>
+                </select>
+                <input type="number" id="ca-E" placeholder="oppure inserisci valore manuale" step="any" style="margin-top:8px;">
+            </div>
+            <button class="calc-button" onclick="calcColpoAriete()">Calcola</button>
+            <div id="ca-results" class="results">
+                <div class="result-value" id="ca-result"></div>
+                <div style="margin-top: 15px; font-size: 14px; color: #555;" id="ca-details"></div>
+            </div>
+        </div>
+
+        <!-- SVUOTAMENTO SERBATOIO -->
+        <div id="svuotamento-serbatoio" class="page">
+            <button class="back-button" onclick="showPage('main-menu')">← Indietro</button>
+            <h2>⏱️ Tempo di Svuotamento Serbatoio</h2>
+            <div class="info-box" style="margin-top: 20px;">
+                📐 <strong>Formula di Torricelli:</strong><br>
+                t = (2 × A × √H₀) / (Cd × a × √(2g))<br><br>
+                <strong>Dove:</strong><br>
+                • t = tempo di svuotamento [s]<br>
+                • A = sezione serbatoio [m²]<br>
+                • H₀ = altezza iniziale del pelo libero [m]<br>
+                • Cd = coefficiente di efflusso (tipicamente 0.6)<br>
+                • a = area orifizio di uscita [m²]<br>
+                • g = 9.81 m/s²
+            </div>
+            <div class="input-group">
+                <label>Sezione serbatoio A [m²]</label>
+                <input type="number" id="sv-A" placeholder="es. 10" step="any">
+            </div>
+            <div class="input-group">
+                <label>Altezza iniziale H₀ [m]</label>
+                <input type="number" id="sv-H" placeholder="es. 3.0" step="any">
+            </div>
+            <div class="input-group">
+                <label>Diametro orifizio d [mm]</label>
+                <input type="number" id="sv-d" placeholder="es. 50" step="any">
+            </div>
+            <div class="input-group">
+                <label>Coefficiente di efflusso Cd</label>
+                <input type="number" id="sv-Cd" placeholder="es. 0.6" step="any" value="0.6">
+            </div>
+            <button class="calc-button" onclick="calcSvuotamento()">Calcola</button>
+            <div id="sv-results" class="results">
+                <div class="result-value" id="sv-result"></div>
+                <div style="margin-top: 15px; font-size: 14px; color: #555;" id="sv-details"></div>
+            </div>
+        </div>
+
+        <!-- CURVA DI DURATA PORTATE -->
+        <div id="curva-durata" class="page">
+            <button class="back-button" onclick="showPage('main-menu')">← Indietro</button>
+            <h2>📊 Curva di Durata Portate</h2>
+            <div class="info-box" style="margin-top: 20px;">
+                📐 <strong>Metodo:</strong><br>
+                Inserisci una serie di misure di portata (separate da virgola o spazi). Il calcolo ordina le portate in modo decrescente e assegna a ciascuna la probabilità di superamento:<br><br>
+                P(%) = (rank / n) × 100<br><br>
+                • rank = posizione in ordine decrescente<br>
+                • n = numero totale di misure
+            </div>
+            <div class="input-group">
+                <label>Valori di portata [L/s o m³/s] — separati da virgola o spazio</label>
+                <textarea id="cd-valori" rows="4" placeholder="es. 12.5, 8.3, 25.1, 5.0, 18.7, 3.2, 30.4, 9.9" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:14px;resize:vertical;"></textarea>
+            </div>
+            <div class="input-group">
+                <label>Unità di misura</label>
+                <select id="cd-unita">
+                    <option value="L/s">L/s</option>
+                    <option value="m³/s">m³/s</option>
+                    <option value="m³/h">m³/h</option>
+                </select>
+            </div>
+            <button class="calc-button" onclick="calcCurvaDurata()">Calcola</button>
+            <div id="cd-results" class="results">
+                <div class="result-value" id="cd-result"></div>
+                <div id="cd-table" style="margin-top:15px;overflow-x:auto;font-size:13px;"></div>
+            </div>
+        </div>
+
+        <!-- BACINO IDROGRAFICO -->
+        <div id="bacino-idrografico" class="page">
+            <button class="back-button" onclick="showPage('main-menu')">← Indietro</button>
+            <h2>🌧️ Calcolo Bacino Idrografico</h2>
+            <div class="info-box" style="margin-top: 20px;">
+                📐 <strong>Formula Razionale:</strong><br>
+                Q = C × i × A / 3.6<br><br>
+                <strong>Dove:</strong><br>
+                • Q = portata di picco [m³/s]<br>
+                • C = coefficiente di deflusso [0–1]<br>
+                • i = intensità di pioggia [mm/h]<br>
+                • A = area del bacino [km²]<br>
+                • 3.6 = fattore di conversione
+            </div>
+            <div class="input-group">
+                <label>Coefficiente di deflusso C</label>
+                <select id="bi-C-preset" onchange="document.getElementById('bi-C').value=this.value">
+                    <option value="">-- Seleziona tipo di superficie --</option>
+                    <option value="0.95">Tetti impermeabili (0.95)</option>
+                    <option value="0.85">Asfalto / strade (0.85)</option>
+                    <option value="0.70">Parcheggi (0.70)</option>
+                    <option value="0.55">Prati urbani, poca pendenza (0.55)</option>
+                    <option value="0.40">Aree agricole (0.40)</option>
+                    <option value="0.25">Boschi (0.25)</option>
+                    <option value="0.15">Terreno permeabile pianura (0.15)</option>
+                </select>
+                <input type="number" id="bi-C" placeholder="oppure inserisci valore manuale (0–1)" step="0.01" min="0" max="1" style="margin-top:8px;">
+            </div>
+            <div class="input-group">
+                <label>Intensità di pioggia i [mm/h]</label>
+                <input type="number" id="bi-i" placeholder="es. 50" step="any">
+            </div>
+            <div class="input-group">
+                <label>Area bacino A [km²]</label>
+                <input type="number" id="bi-A" placeholder="es. 2.5" step="any">
+            </div>
+            <button class="calc-button" onclick="calcBacino()">Calcola</button>
+            <div id="bi-results" class="results">
+                <div class="result-value" id="bi-result"></div>
+                <div style="margin-top: 15px; font-size: 14px; color: #555;" id="bi-details"></div>
+            </div>
+        </div>
+
+        <!-- NUMERO DI REYNOLDS -->
+        <div id="numero-reynolds" class="page">
+            <button class="back-button" onclick="showPage('main-menu')">← Indietro</button>
+            <h2>🔬 Numero di Reynolds</h2>
+            <div class="info-box" style="margin-top: 20px;">
+                📐 <strong>Formula:</strong><br>
+                Re = v × D / ν<br><br>
+                <strong>Dove:</strong><br>
+                • Re = numero di Reynolds [adimensionale]<br>
+                • v = velocità media [m/s]<br>
+                • D = diametro idraulico [m]<br>
+                • ν = viscosità cinematica [m²/s]<br><br>
+                <strong>Regime:</strong><br>
+                • Re &lt; 2300 → Laminare<br>
+                • 2300 ≤ Re ≤ 4000 → Transitorio<br>
+                • Re &gt; 4000 → Turbolento
+            </div>
+            <div class="input-group">
+                <label>Velocità v [m/s]</label>
+                <input type="number" id="re-v" placeholder="es. 1.5" step="any">
+            </div>
+            <div class="input-group">
+                <label>Diametro idraulico D [mm]</label>
+                <input type="number" id="re-D" placeholder="es. 200" step="any">
+            </div>
+            <div class="input-group">
+                <label>Temperatura acqua [°C]</label>
+                <input type="number" id="re-T" placeholder="es. 15" step="any" value="15">
+                <div class="unit">La viscosità cinematica viene calcolata automaticamente</div>
+            </div>
+            <button class="calc-button" onclick="calcReynolds()">Calcola</button>
+            <div id="re-results" class="results">
+                <div class="result-value" id="re-result"></div>
+                <div style="margin-top: 15px; font-size: 14px; color: #555;" id="re-details"></div>
             </div>
         </div>
 
@@ -2908,6 +3134,225 @@
                 '• Fattore d\'attrito λ: ' + lambda_comm.toFixed(5);
             document.getElementById('dc-results').classList.add('show');
         }
+
+        // ===== COLPO D'ARIETE =====
+        function calcColpoAriete() {
+            const D_mm = parseFloat(document.getElementById('ca-D').value);
+            const s_mm = parseFloat(document.getElementById('ca-s').value);
+            const v = parseFloat(document.getElementById('ca-v').value);
+            const E_GPa = parseFloat(document.getElementById('ca-E').value);
+            if (isNaN(D_mm) || isNaN(s_mm) || isNaN(v) || isNaN(E_GPa) || D_mm <= 0 || s_mm <= 0 || E_GPa <= 0) {
+                alert('Inserisci tutti i valori validi!');
+                return;
+            }
+            const D = D_mm / 1000;
+            const s = s_mm / 1000;
+            const E = E_GPa * 1e9;
+            const K = 2.1e9;
+            const rho = 1000;
+            const c = Math.sqrt(K / rho) / Math.sqrt(1 + (K * D) / (E * s));
+            const deltaP_Pa = rho * c * v;
+            const deltaP_bar = deltaP_Pa / 1e5;
+            const t_critico = 2 * (D_mm > 0 ? 1000 : 1000) / c;
+            document.getElementById('ca-result').textContent = `ΔP = ${deltaP_bar.toFixed(2)} bar`;
+            document.getElementById('ca-details').innerHTML =
+                '<strong>Dettaglio calcolo:</strong><br>' +
+                '• Celerità onda c = ' + c.toFixed(1) + ' m/s<br>' +
+                '• Sovrapressione ΔP = ' + deltaP_Pa.toFixed(0) + ' Pa = ' + deltaP_bar.toFixed(2) + ' bar<br>' +
+                '• Velocità di chiusura considerata: Δv = ' + v.toFixed(3) + ' m/s (chiusura istantanea)<br>' +
+                '<br><strong>⚠️ Nota:</strong> Per chiusure graduali con tempo t<sub>c</sub> > 2L/c applicare fattori riduttivi.';
+            document.getElementById('ca-results').classList.add('show');
+        }
+
+        // ===== SVUOTAMENTO SERBATOIO =====
+        function calcSvuotamento() {
+            const A = parseFloat(document.getElementById('sv-A').value);
+            const H0 = parseFloat(document.getElementById('sv-H').value);
+            const d_mm = parseFloat(document.getElementById('sv-d').value);
+            const Cd = parseFloat(document.getElementById('sv-Cd').value);
+            if (isNaN(A) || isNaN(H0) || isNaN(d_mm) || isNaN(Cd) || A <= 0 || H0 <= 0 || d_mm <= 0 || Cd <= 0) {
+                alert('Inserisci tutti i valori validi!');
+                return;
+            }
+            const g = 9.81;
+            const d = d_mm / 1000;
+            const a = Math.PI * d * d / 4;
+            const t = (2 * A * Math.sqrt(H0)) / (Cd * a * Math.sqrt(2 * g));
+            const t_min = t / 60;
+            const t_h = t / 3600;
+            const Q0 = Cd * a * Math.sqrt(2 * g * H0);
+            const v0 = Q0 / a;
+            let tempoStr = t < 120 ? t.toFixed(1) + ' s' : t < 7200 ? t_min.toFixed(1) + ' min' : t_h.toFixed(2) + ' h';
+            document.getElementById('sv-result').textContent = `Tempo di svuotamento: ${tempoStr}`;
+            document.getElementById('sv-details').innerHTML =
+                '<strong>Dettaglio calcolo:</strong><br>' +
+                '• Area sezione serbatoio A = ' + A.toFixed(2) + ' m²<br>' +
+                '• Area orifizio a = ' + (a * 1e4).toFixed(2) + ' cm²<br>' +
+                '• Portata iniziale Q₀ = ' + (Q0 * 1000).toFixed(2) + ' L/s<br>' +
+                '• Velocità iniziale uscita v₀ = ' + v0.toFixed(2) + ' m/s<br>' +
+                '• Tempo totale: ' + t.toFixed(1) + ' s = ' + t_min.toFixed(1) + ' min = ' + t_h.toFixed(3) + ' h';
+            document.getElementById('sv-results').classList.add('show');
+        }
+
+        // ===== CURVA DI DURATA PORTATE =====
+        function calcCurvaDurata() {
+            const raw = document.getElementById('cd-valori').value;
+            const unita = document.getElementById('cd-unita').value;
+            const tokens = raw.split(/[\s,;]+/).filter(s => s.trim() !== '');
+            const valori = tokens.map(Number).filter(v => !isNaN(v) && v >= 0);
+            if (valori.length < 2) {
+                alert('Inserisci almeno 2 valori di portata!');
+                return;
+            }
+            const sorted = [...valori].sort((a, b) => b - a);
+            const n = sorted.length;
+            const Qmax = sorted[0];
+            const Qmin = sorted[n - 1];
+            const Qmean = valori.reduce((s, v) => s + v, 0) / n;
+            let tableHtml = '<table style="border-collapse:collapse;width:100%;">' +
+                '<tr style="background:#1e3c72;color:white;">' +
+                '<th style="padding:6px 10px;">Rank</th>' +
+                '<th style="padding:6px 10px;">Q [' + unita + ']</th>' +
+                '<th style="padding:6px 10px;">P superamento [%]</th>' +
+                '</tr>';
+            sorted.forEach((q, i) => {
+                const p = ((i + 1) / n * 100).toFixed(1);
+                const bg = i % 2 === 0 ? '#f5f8ff' : 'white';
+                tableHtml += '<tr style="background:' + bg + ';">' +
+                    '<td style="padding:5px 10px;text-align:center;">' + (i + 1) + '</td>' +
+                    '<td style="padding:5px 10px;text-align:center;">' + q.toFixed(3) + '</td>' +
+                    '<td style="padding:5px 10px;text-align:center;">' + p + '%</td>' +
+                    '</tr>';
+            });
+            tableHtml += '</table>';
+            document.getElementById('cd-result').textContent = 'Curva calcolata su ' + n + ' misure';
+            document.getElementById('cd-table').innerHTML =
+                '<strong>Statistiche:</strong><br>' +
+                '• Q max = ' + Qmax.toFixed(3) + ' ' + unita + '<br>' +
+                '• Q min = ' + Qmin.toFixed(3) + ' ' + unita + '<br>' +
+                '• Q media = ' + Qmean.toFixed(3) + ' ' + unita + '<br><br>' +
+                '<strong>Tabella curva di durata:</strong><br>' + tableHtml;
+            document.getElementById('cd-results').classList.add('show');
+        }
+
+        // ===== BACINO IDROGRAFICO =====
+        function calcBacino() {
+            const C = parseFloat(document.getElementById('bi-C').value);
+            const i = parseFloat(document.getElementById('bi-i').value);
+            const A = parseFloat(document.getElementById('bi-A').value);
+            if (isNaN(C) || isNaN(i) || isNaN(A) || C <= 0 || C > 1 || i <= 0 || A <= 0) {
+                alert('Inserisci tutti i valori validi! C deve essere tra 0 e 1.');
+                return;
+            }
+            const Q = C * i * A / 3.6;
+            const Q_Ls = Q * 1000;
+            document.getElementById('bi-result').textContent = 'Q picco = ' + Q.toFixed(3) + ' m³/s';
+            document.getElementById('bi-details').innerHTML =
+                '<strong>Dettaglio calcolo:</strong><br>' +
+                '• Coefficiente deflusso C = ' + C.toFixed(2) + '<br>' +
+                '• Intensità pioggia i = ' + i.toFixed(1) + ' mm/h<br>' +
+                '• Area bacino A = ' + A.toFixed(3) + ' km²<br>' +
+                '• Q = C × i × A / 3.6 = ' + Q.toFixed(3) + ' m³/s = ' + Q_Ls.toFixed(1) + ' L/s<br>' +
+                '<br><strong>⚠️ Nota:</strong> La formula razionale è valida per bacini piccoli (A &lt; 50 km²) e piogge di durata pari al tempo di corrivazione.';
+            document.getElementById('bi-results').classList.add('show');
+        }
+
+        // ===== NUMERO DI REYNOLDS =====
+        function calcReynolds() {
+            const v = parseFloat(document.getElementById('re-v').value);
+            const D_mm = parseFloat(document.getElementById('re-D').value);
+            const T = parseFloat(document.getElementById('re-T').value);
+            if (isNaN(v) || isNaN(D_mm) || isNaN(T) || v <= 0 || D_mm <= 0) {
+                alert('Inserisci tutti i valori validi!');
+                return;
+            }
+            const D = D_mm / 1000;
+            // Viscosità cinematica dell'acqua in funzione della temperatura (formula approssimata)
+            const nu = 1.78e-6 / (1 + 0.0337 * T + 0.000221 * T * T);
+            const Re = v * D / nu;
+            let regime, colore;
+            if (Re < 2300) {
+                regime = 'LAMINARE';
+                colore = '#22c55e';
+            } else if (Re <= 4000) {
+                regime = 'TRANSITORIO';
+                colore = '#f59e0b';
+            } else {
+                regime = 'TURBOLENTO';
+                colore = '#ef4444';
+            }
+            document.getElementById('re-result').innerHTML =
+                'Re = ' + Math.round(Re).toLocaleString('it-IT') +
+                ' &nbsp;→&nbsp; <span style="color:' + colore + ';font-weight:700;">' + regime + '</span>';
+            document.getElementById('re-details').innerHTML =
+                '<strong>Dettaglio calcolo:</strong><br>' +
+                '• Velocità v = ' + v.toFixed(3) + ' m/s<br>' +
+                '• Diametro idraulico D = ' + D_mm.toFixed(1) + ' mm = ' + D.toFixed(4) + ' m<br>' +
+                '• Temperatura T = ' + T.toFixed(1) + ' °C<br>' +
+                '• Viscosità cinematica ν = ' + (nu * 1e6).toFixed(4) + ' × 10⁻⁶ m²/s<br>' +
+                '• Numero di Reynolds Re = ' + Math.round(Re).toLocaleString('it-IT') + '<br>' +
+                '• Regime: <strong>' + regime + '</strong>';
+            document.getElementById('re-results').classList.add('show');
+        }
+
+        // ===== ESPORTAZIONE PDF =====
+        function exportPDF(titolo, contentHtml) {
+            const data = new Date().toLocaleDateString('it-IT');
+            const printWin = window.open('', '_blank', 'width=800,height=600');
+            printWin.document.write(`<!DOCTYPE html>
+<html lang="it"><head>
+<meta charset="UTF-8">
+<title>HydroPortable - ${titolo}</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 30px; color: #222; }
+  h1 { color: #1e3c72; font-size: 20px; margin-bottom: 4px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 20px; }
+  hr { border: none; border-top: 2px solid #1e3c72; margin: 12px 0; }
+  .result-value { font-size: 22px; font-weight: bold; color: #2a5298; margin: 10px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  th { background: #1e3c72; color: white; padding: 5px 8px; }
+  td { padding: 4px 8px; }
+  @media print { button { display: none; } }
+</style>
+</head><body>
+<h1>HydroPortable — ${titolo}</h1>
+<div class="sub">Data: ${data} &nbsp;|&nbsp; Ing. Alessio Moscaritoli</div>
+<hr>
+${contentHtml}
+<hr>
+<p style="font-size:11px;color:#999;margin-top:20px;">Generato da HydroPortable — strumento di supporto al calcolo idraulico. I risultati non sostituiscono una progettazione professionale.</p>
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`);
+            printWin.document.close();
+        }
+
+        // Aggiunge bottone PDF automaticamente quando appare un risultato
+        (function() {
+            function addPdfButton(resultsDiv) {
+                if (resultsDiv.querySelector('.pdf-btn')) return;
+                const btn = document.createElement('button');
+                btn.className = 'pdf-btn';
+                btn.textContent = '📄 Esporta PDF';
+                btn.onclick = function() {
+                    const page = resultsDiv.closest('.page');
+                    const titolo = page ? (page.querySelector('h2') ? page.querySelector('h2').textContent : 'Risultato') : 'Risultato';
+                    exportPDF(titolo, resultsDiv.innerHTML.replace(/<button[^>]*>.*?<\/button>/gi, ''));
+                };
+                resultsDiv.appendChild(btn);
+            }
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(m) {
+                    if (m.type === 'attributes' && m.attributeName === 'class') {
+                        if (m.target.classList.contains('show') && m.target.classList.contains('results')) {
+                            addPdfButton(m.target);
+                        }
+                    }
+                });
+            });
+            document.querySelectorAll('.results').forEach(function(el) {
+                observer.observe(el, { attributes: true });
+            });
+        })();
 
     </script>
 </body>
