@@ -393,6 +393,7 @@
                 <button class="menu-button" onclick="showPage('potenza-pompa')">⚡ Potenza Pompa</button>
                 <button class="menu-button" onclick="showPage('energia-consumata')">🔋 Energia Consumata</button>
                 <button class="menu-button" onclick="showPage('conversioni')">🔄 Conversioni Unità di Misura</button>
+                <button class="menu-button" onclick="showPage('reti-idriche-menu')">🔵 Reti Idriche</button>
             </div>
         </div>
         <!-- SOTTO-MENU CALCOLO PORTATA -->
@@ -1433,6 +1434,177 @@
                 <div class="result-value" id="conv-result"></div>
             </div>
         </div>
+
+        <!-- RETI IDRICHE MENU -->
+        <div id="reti-idriche-menu" class="page">
+            <button class="back-button" onclick="showPage('main-menu')">← Indietro</button>
+            <h2>🔵 Reti Idriche</h2>
+            <div class="info-box">
+                💡 Calcoli idraulici per condotte in pressione (formula di Darcy-Weisbach)
+            </div>
+            <div class="menu-grid">
+                <button class="menu-button" onclick="showPage('perdite-continue')">📉 Perdite di Carico Continue</button>
+                <button class="menu-button" onclick="showPage('perdite-localizzate')">🔧 Perdite di Carico Localizzate</button>
+                <button class="menu-button" onclick="showPage('dimensionamento-condotta')">📐 Dimensionamento Condotta</button>
+            </div>
+        </div>
+
+        <!-- PERDITE DI CARICO CONTINUE -->
+        <div id="perdite-continue" class="page">
+            <button class="back-button" onclick="showPage('reti-idriche-menu')">← Indietro</button>
+            <h2>📉 Perdite di Carico Continue</h2>
+            <div class="info-box" style="margin-top: 20px;">
+                📐 <strong>Formula di Darcy-Weisbach:</strong><br>
+                Δh = λ × (L/D) × (v²/2g)<br><br>
+                <strong>Dove:</strong><br>
+                • Δh = perdita di carico [m]<br>
+                • λ = fattore d'attrito (Colebrook-White) [-]<br>
+                • L = lunghezza condotta [m], D = diametro interno [m]<br>
+                • v = velocità media [m/s], g = 9.81 m/s²
+            </div>
+            <div class="mode-selector">
+                <button class="mode-button active" onclick="setPCMode('perdita')">Calcola Perdita Δh</button>
+                <button class="mode-button" onclick="setPCMode('portata')">Calcola Portata Q</button>
+            </div>
+            <div class="input-group">
+                <label>Diametro interno D [mm]</label>
+                <input type="number" id="pc-d" step="1" placeholder="es: 100">
+                <div class="unit">Diametro nominale interno della condotta</div>
+            </div>
+            <div class="input-group">
+                <label>Lunghezza L [m]</label>
+                <input type="number" id="pc-l" step="0.1" placeholder="es: 100">
+            </div>
+            <div id="pc-q-group" class="input-group">
+                <label>Portata Q [L/s]</label>
+                <input type="number" id="pc-q" step="0.01" placeholder="es: 5.0">
+            </div>
+            <div id="pc-dh-group" class="input-group" style="display: none;">
+                <label>Perdita di carico Δh [m]</label>
+                <input type="number" id="pc-dh" step="0.01" placeholder="es: 2.5">
+            </div>
+            <div class="input-group">
+                <label>Materiale condotta (scabrezza ε)</label>
+                <select id="pc-eps-select" onchange="updatePCEpsilon()">
+                    <option value="0.0015">PVC / HDPE / Rame (ε = 0.0015 mm)</option>
+                    <option value="0.046" selected>Acciaio trafilato (ε = 0.046 mm)</option>
+                    <option value="0.26">Ghisa (ε = 0.26 mm)</option>
+                    <option value="0.3">Calcestruzzo liscio (ε = 0.3 mm)</option>
+                    <option value="3.0">Calcestruzzo rugoso (ε = 3.0 mm)</option>
+                    <option value="custom">Valore personalizzato...</option>
+                </select>
+            </div>
+            <div id="pc-eps-custom-group" class="input-group" style="display: none;">
+                <label>Scabrezza personalizzata ε [mm]</label>
+                <input type="number" id="pc-eps-custom" step="0.001" placeholder="es: 0.1">
+            </div>
+            <button class="calc-button" onclick="calcPerditeContinue()">Calcola</button>
+            <div id="pc-results" class="results">
+                <div class="result-value" id="pc-result"></div>
+                <div style="margin-top: 15px; font-size: 14px; color: #555;" id="pc-details"></div>
+            </div>
+        </div>
+
+        <!-- PERDITE DI CARICO LOCALIZZATE -->
+        <div id="perdite-localizzate" class="page">
+            <button class="back-button" onclick="showPage('reti-idriche-menu')">← Indietro</button>
+            <h2>🔧 Perdite di Carico Localizzate</h2>
+            <div class="info-box" style="margin-top: 20px;">
+                📐 <strong>Formula:</strong><br>
+                Δh<sub>loc</sub> = K × (v²/2g)<br><br>
+                <strong>Dove:</strong><br>
+                • Δh<sub>loc</sub> = perdita localizzata [m]<br>
+                • K = coefficiente di perdita del raccordo [-]<br>
+                • v = velocità media nella condotta [m/s]<br>
+                • g = 9.81 m/s²
+            </div>
+            <div class="input-group">
+                <label>Diametro interno D [mm]</label>
+                <input type="number" id="pl-d" step="1" placeholder="es: 100">
+            </div>
+            <div class="input-group">
+                <label>Portata Q [L/s]</label>
+                <input type="number" id="pl-q" step="0.01" placeholder="es: 5.0">
+            </div>
+            <div class="input-group">
+                <label>Tipo di singolarità</label>
+                <select id="pl-tipo" onchange="updatePLCoeff()">
+                    <option value="0.9">Curva 90° raggio corto (K = 0.9)</option>
+                    <option value="0.4">Curva 90° raggio medio (K = 0.4)</option>
+                    <option value="0.2">Curva 90° raggio lungo (K = 0.2)</option>
+                    <option value="0.3">Curva 45° (K = 0.3)</option>
+                    <option value="0.5">Entrata a spigolo vivo (K = 0.5)</option>
+                    <option value="0.25">Entrata smussata (K = 0.25)</option>
+                    <option value="1.0">Uscita in serbatoio (K = 1.0)</option>
+                    <option value="0.5t">Te in asse (K = 0.5)</option>
+                    <option value="1.5">Te laterale (K = 1.5)</option>
+                    <option value="0.05">Valvola a sfera aperta (K = 0.05)</option>
+                    <option value="0.3b">Valvola a farfalla aperta (K = 0.3)</option>
+                    <option value="6.0">Valvola a globo aperta (K = 6.0)</option>
+                    <option value="2.0">Valvola di ritegno (K = 2.0)</option>
+                    <option value="2.0f">Filtro / Strainer (K = 2.0)</option>
+                    <option value="custom">Valore personalizzato K...</option>
+                </select>
+            </div>
+            <div id="pl-k-custom-group" class="input-group" style="display: none;">
+                <label>Coefficiente K personalizzato [-]</label>
+                <input type="number" id="pl-k-custom" step="0.01" placeholder="es: 1.5">
+            </div>
+            <div class="input-group">
+                <label>Numero di singolarità uguali</label>
+                <input type="number" id="pl-n" step="1" placeholder="es: 1" value="1">
+                <div class="unit">Quante volte si ripete questa singolarità nel tratto</div>
+            </div>
+            <button class="calc-button" onclick="calcPerditeLocalizzate()">Calcola</button>
+            <div id="pl-results" class="results">
+                <div class="result-value" id="pl-result"></div>
+                <div style="margin-top: 15px; font-size: 14px; color: #555;" id="pl-details"></div>
+            </div>
+        </div>
+
+        <!-- DIMENSIONAMENTO CONDOTTA -->
+        <div id="dimensionamento-condotta" class="page">
+            <button class="back-button" onclick="showPage('reti-idriche-menu')">← Indietro</button>
+            <h2>📐 Dimensionamento Condotta</h2>
+            <div class="info-box" style="margin-top: 20px;">
+                📐 <strong>Metodo:</strong> dato Q e la perdita di carico disponibile, si determina il diametro minimo tramite Darcy-Weisbach con iterazione su Colebrook-White.<br><br>
+                Il risultato viene arrotondato al <strong>diametro commerciale</strong> DN standard immediatamente superiore.
+            </div>
+            <div class="input-group">
+                <label>Portata Q [L/s]</label>
+                <input type="number" id="dc-q" step="0.01" placeholder="es: 5.0">
+            </div>
+            <div class="input-group">
+                <label>Lunghezza condotta L [m]</label>
+                <input type="number" id="dc-l" step="0.1" placeholder="es: 100">
+            </div>
+            <div class="input-group">
+                <label>Perdita di carico disponibile Δh [m]</label>
+                <input type="number" id="dc-dh" step="0.01" placeholder="es: 5.0">
+                <div class="unit">Dislivello piezometrico disponibile tra inizio e fine condotta</div>
+            </div>
+            <div class="input-group">
+                <label>Materiale condotta (scabrezza ε)</label>
+                <select id="dc-eps-select" onchange="updateDCEpsilon()">
+                    <option value="0.0015">PVC / HDPE / Rame (ε = 0.0015 mm)</option>
+                    <option value="0.046" selected>Acciaio trafilato (ε = 0.046 mm)</option>
+                    <option value="0.26">Ghisa (ε = 0.26 mm)</option>
+                    <option value="0.3">Calcestruzzo liscio (ε = 0.3 mm)</option>
+                    <option value="3.0">Calcestruzzo rugoso (ε = 3.0 mm)</option>
+                    <option value="custom">Valore personalizzato...</option>
+                </select>
+            </div>
+            <div id="dc-eps-custom-group" class="input-group" style="display: none;">
+                <label>Scabrezza personalizzata ε [mm]</label>
+                <input type="number" id="dc-eps-custom" step="0.001" placeholder="es: 0.1">
+            </div>
+            <button class="calc-button" onclick="calcDimensionamentoCond()">Calcola</button>
+            <div id="dc-results" class="results">
+                <div class="result-value" id="dc-result"></div>
+                <div style="margin-top: 15px; font-size: 14px; color: #555;" id="dc-details"></div>
+            </div>
+        </div>
+
     </div>
     <script>
         // Inizializzazione spinner Strickler e coefficienti efflusso
@@ -2536,6 +2708,207 @@
                 `;
             }
         }
+
+        // ==================== RETI IDRICHE ====================
+
+        function colebrookWhite(Re, relRough) {
+            let lambda = 0.02;
+            for (let i = 0; i < 15; i++) {
+                lambda = 1 / Math.pow(-2 * Math.log10(relRough / 3.7 + 2.51 / (Re * Math.sqrt(lambda))), 2);
+            }
+            return lambda;
+        }
+
+        function calcFrictionFactor(Re, relRough) {
+            if (Re < 2300) return 64 / Re;
+            if (Re < 4000) {
+                const lam = 64 / Re;
+                const turb = colebrookWhite(4000, relRough);
+                return lam + (turb - lam) * (Re - 2300) / 1700;
+            }
+            return colebrookWhite(Re, relRough);
+        }
+
+        function getEpsilonPC() {
+            const sel = document.getElementById('pc-eps-select').value;
+            if (sel === 'custom') return parseFloat(document.getElementById('pc-eps-custom').value);
+            return parseFloat(sel);
+        }
+
+        function getEpsilonDC() {
+            const sel = document.getElementById('dc-eps-select').value;
+            if (sel === 'custom') return parseFloat(document.getElementById('dc-eps-custom').value);
+            return parseFloat(sel);
+        }
+
+        function updatePCEpsilon() {
+            const isCustom = document.getElementById('pc-eps-select').value === 'custom';
+            document.getElementById('pc-eps-custom-group').style.display = isCustom ? 'block' : 'none';
+        }
+
+        function updateDCEpsilon() {
+            const isCustom = document.getElementById('dc-eps-select').value === 'custom';
+            document.getElementById('dc-eps-custom-group').style.display = isCustom ? 'block' : 'none';
+        }
+
+        function updatePLCoeff() {
+            const isCustom = document.getElementById('pl-tipo').value === 'custom';
+            document.getElementById('pl-k-custom-group').style.display = isCustom ? 'block' : 'none';
+        }
+
+        function setPCMode(mode) {
+            const buttons = document.querySelectorAll('#perdite-continue .mode-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('pc-q-group').style.display = mode === 'perdita' ? 'block' : 'none';
+            document.getElementById('pc-dh-group').style.display = mode === 'portata' ? 'block' : 'none';
+            document.getElementById('pc-results').classList.remove('show');
+        }
+
+        function calcPerditeContinue() {
+            const D_mm = parseFloat(document.getElementById('pc-d').value);
+            const L = parseFloat(document.getElementById('pc-l').value);
+            const eps_mm = getEpsilonPC();
+            const g = 9.81;
+            const nu = 1e-6;
+            if (isNaN(D_mm) || isNaN(L) || isNaN(eps_mm) || D_mm <= 0 || L <= 0 || eps_mm < 0) {
+                alert('Inserisci tutti i valori validi!'); return;
+            }
+            const D = D_mm / 1000;
+            const eps = eps_mm / 1000;
+            const relRough = eps / D;
+            const A = Math.PI * D * D / 4;
+            const mode = document.querySelector('#perdite-continue .mode-button.active').textContent;
+            if (mode.includes('Perdita')) {
+                const Q_Ls = parseFloat(document.getElementById('pc-q').value);
+                if (isNaN(Q_Ls) || Q_Ls <= 0) { alert('Inserisci portata valida!'); return; }
+                const Q = Q_Ls / 1000;
+                const v = Q / A;
+                const Re = v * D / nu;
+                const lambda = calcFrictionFactor(Re, relRough);
+                const Dh = lambda * (L / D) * (v * v) / (2 * g);
+                const J = Dh / L * 1000;
+                document.getElementById('pc-result').textContent = 'Δh = ' + Dh.toFixed(3) + ' m';
+                document.getElementById('pc-details').innerHTML =
+                    '<strong>Risultati:</strong><br>' +
+                    '• Perdita di carico: <strong>' + Dh.toFixed(3) + ' m</strong><br>' +
+                    '• Gradiente piezometrico: ' + J.toFixed(2) + ' ‰<br><br>' +
+                    '<strong>Parametri idraulici:</strong><br>' +
+                    '• Velocità: ' + v.toFixed(3) + ' m/s<br>' +
+                    '• Numero di Reynolds: ' + Math.round(Re).toLocaleString('it-IT') + '<br>' +
+                    '• Fattore d\'attrito λ: ' + lambda.toFixed(5) + '<br>' +
+                    '• Regime: ' + (Re < 2300 ? 'Laminare' : Re < 4000 ? 'Transizione' : 'Turbolento') + '<br>' +
+                    '• Scabrezza relativa ε/D: ' + relRough.toExponential(2);
+            } else {
+                const Dh = parseFloat(document.getElementById('pc-dh').value);
+                if (isNaN(Dh) || Dh <= 0) { alert('Inserisci perdita di carico valida!'); return; }
+                let lambda = 0.02;
+                let v = 0, Re = 0;
+                for (let i = 0; i < 20; i++) {
+                    v = Math.sqrt(Dh * 2 * g * D / (lambda * L));
+                    Re = v * D / nu;
+                    lambda = calcFrictionFactor(Re, relRough);
+                }
+                const Q = v * A;
+                const Q_Ls = Q * 1000;
+                const J = Dh / L * 1000;
+                document.getElementById('pc-result').textContent = 'Q = ' + Q_Ls.toFixed(2) + ' L/s';
+                document.getElementById('pc-details').innerHTML =
+                    '<strong>Risultati:</strong><br>' +
+                    '• Portata: <strong>' + Q_Ls.toFixed(2) + ' L/s</strong> = ' + (Q * 3600).toFixed(1) + ' m³/h<br>' +
+                    '• Gradiente piezometrico: ' + J.toFixed(2) + ' ‰<br><br>' +
+                    '<strong>Parametri idraulici:</strong><br>' +
+                    '• Velocità: ' + v.toFixed(3) + ' m/s<br>' +
+                    '• Numero di Reynolds: ' + Math.round(Re).toLocaleString('it-IT') + '<br>' +
+                    '• Fattore d\'attrito λ: ' + lambda.toFixed(5) + '<br>' +
+                    '• Regime: ' + (Re < 2300 ? 'Laminare' : Re < 4000 ? 'Transizione' : 'Turbolento');
+            }
+            document.getElementById('pc-results').classList.add('show');
+        }
+
+        function calcPerditeLocalizzate() {
+            const D_mm = parseFloat(document.getElementById('pl-d').value);
+            const Q_Ls = parseFloat(document.getElementById('pl-q').value);
+            const n = parseInt(document.getElementById('pl-n').value) || 1;
+            const g = 9.81;
+            const tipoVal = document.getElementById('pl-tipo').value;
+            let K;
+            if (tipoVal === 'custom') {
+                K = parseFloat(document.getElementById('pl-k-custom').value);
+            } else {
+                K = parseFloat(tipoVal);
+            }
+            if (isNaN(D_mm) || isNaN(Q_Ls) || isNaN(K) || D_mm <= 0 || Q_Ls <= 0 || K < 0) {
+                alert('Inserisci tutti i valori validi!'); return;
+            }
+            const D = D_mm / 1000;
+            const A = Math.PI * D * D / 4;
+            const Q = Q_Ls / 1000;
+            const v = Q / A;
+            const Dh_sing = K * v * v / (2 * g);
+            const Dh_tot = n * Dh_sing;
+            document.getElementById('pl-result').textContent = 'Δh = ' + Dh_tot.toFixed(4) + ' m';
+            document.getElementById('pl-details').innerHTML =
+                '<strong>Risultati:</strong><br>' +
+                '• Perdita per singola singolarità: ' + Dh_sing.toFixed(4) + ' m<br>' +
+                '• Perdita totale (× ' + n + '): <strong>' + Dh_tot.toFixed(4) + ' m</strong><br><br>' +
+                '<strong>Parametri:</strong><br>' +
+                '• Velocità: ' + v.toFixed(3) + ' m/s<br>' +
+                '• Energia cinetica v²/2g: ' + (v * v / (2 * g)).toFixed(4) + ' m<br>' +
+                '• Coefficiente K: ' + K;
+            document.getElementById('pl-results').classList.add('show');
+        }
+
+        function calcDimensionamentoCond() {
+            const Q_Ls = parseFloat(document.getElementById('dc-q').value);
+            const L = parseFloat(document.getElementById('dc-l').value);
+            const Dh = parseFloat(document.getElementById('dc-dh').value);
+            const eps_mm = getEpsilonDC();
+            const g = 9.81;
+            const nu = 1e-6;
+            if (isNaN(Q_Ls) || isNaN(L) || isNaN(Dh) || isNaN(eps_mm) || Q_Ls <= 0 || L <= 0 || Dh <= 0) {
+                alert('Inserisci tutti i valori validi!'); return;
+            }
+            const Q = Q_Ls / 1000;
+            const eps = eps_mm / 1000;
+            // Iteratively solve D such that Darcy-Weisbach gives Δh_calc = Dh
+            // Dh = λ * (L/D) * (4Q/πD²)² / (2g) → D^5 = λ * 16LQ² / (π² * 2g * Dh)
+            let D = 0.05;
+            for (let i = 0; i < 50; i++) {
+                const A = Math.PI * D * D / 4;
+                const v = Q / A;
+                const Re = Math.max(v * D / nu, 1);
+                const relRough = eps / D;
+                const lambda = calcFrictionFactor(Re, relRough);
+                const D_new = Math.pow(lambda * 16 * L * Q * Q / (2 * g * Math.PI * Math.PI * Dh), 0.2);
+                if (Math.abs(D_new - D) < 1e-7) break;
+                D = D_new;
+            }
+            const D_mm_calc = D * 1000;
+            const commercial = [15, 20, 25, 32, 40, 50, 63, 75, 90, 100, 110, 125, 140, 150, 160, 200, 250, 300, 315, 355, 400, 450, 500, 600, 700, 800, 1000];
+            const D_comm = commercial.find(d => d >= D_mm_calc) || commercial[commercial.length - 1];
+            const D_comm_m = D_comm / 1000;
+            const A_comm = Math.PI * D_comm_m * D_comm_m / 4;
+            const v_comm = Q / A_comm;
+            const Re_comm = v_comm * D_comm_m / nu;
+            const lambda_comm = calcFrictionFactor(Re_comm, eps / D_comm_m);
+            const Dh_comm = lambda_comm * (L / D_comm_m) * v_comm * v_comm / (2 * g);
+            const vOk = v_comm >= 0.5 && v_comm <= 3.0;
+            document.getElementById('dc-result').textContent = 'DN ' + D_comm + ' mm';
+            document.getElementById('dc-details').innerHTML =
+                '<strong>Diametro teorico calcolato:</strong> ' + D_mm_calc.toFixed(1) + ' mm<br>' +
+                '<strong>DN commerciale adottato:</strong> ' + D_comm + ' mm<br><br>' +
+                '<strong>Verifica con DN ' + D_comm + ':</strong><br>' +
+                '• Perdita di carico effettiva: ' + Dh_comm.toFixed(3) + ' m ' + (Dh_comm <= Dh ? '✓ OK' : '⚠ supera il disponibile') + '<br>' +
+                '• Perdita disponibile: ' + Dh.toFixed(3) + ' m<br>' +
+                '• Gradiente: ' + (Dh_comm / L * 1000).toFixed(2) + ' ‰<br><br>' +
+                '<strong>Parametri idraulici:</strong><br>' +
+                '• Velocità: ' + v_comm.toFixed(3) + ' m/s ' + (vOk ? '✓ range consigliato (0.5–3 m/s)' : '⚠ fuori range consigliato 0.5–3 m/s') + '<br>' +
+                '• Numero di Reynolds: ' + Math.round(Re_comm).toLocaleString('it-IT') + '<br>' +
+                '• Fattore d\'attrito λ: ' + lambda_comm.toFixed(5);
+            document.getElementById('dc-results').classList.add('show');
+        }
+
     </script>
 </body>
 </html>
