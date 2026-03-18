@@ -303,6 +303,58 @@
             transition: background 0.2s;
         }
         .pdf-btn:hover { background: #2a5298; }
+        /* ===== MENU GRUPPI ===== */
+        .menu-section { margin-bottom: 22px; }
+        .menu-section-title {
+            font-size: 11px; font-weight: 700; color: #999;
+            text-transform: uppercase; letter-spacing: 1.5px;
+            margin-bottom: 10px; padding-bottom: 6px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .menu-grid-compact {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 9px;
+        }
+        .menu-button-sm {
+            padding: 13px 14px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white; border: none; border-radius: 12px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease; text-align: center;
+        }
+        .menu-button-sm:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(30,60,114,0.4); }
+        .menu-button-new { background: linear-gradient(135deg, #1a7a4a 0%, #27ae60 100%) !important; }
+        .menu-button-new:hover { box-shadow: 0 8px 20px rgba(39,174,96,0.4) !important; }
+        /* ===== INVARIANZA ===== */
+        .cat-badge { display:inline-block; padding:7px 22px; border-radius:25px; font-weight:700; font-size:19px; color:white; }
+        .cat-A { background:#e74c3c; } .cat-B { background:#e67e22; } .cat-C { background:#27ae60; }
+        .cat-info-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:14px 0; }
+        .cat-info-card { border-radius:10px; padding:12px; text-align:center; }
+        .cat-info-card.A { background:#fde8e8; border:2px solid #e74c3c; }
+        .cat-info-card.B { background:#fef3e2; border:2px solid #e67e22; }
+        .cat-info-card.C { background:#e8f8f0; border:2px solid #27ae60; }
+        .cat-info-card .ci-title { font-weight:700; font-size:15px; margin-bottom:5px; }
+        .cat-info-card.A .ci-title { color:#e74c3c; }
+        .cat-info-card.B .ci-title { color:#e67e22; }
+        .cat-info-card.C .ci-title { color:#27ae60; }
+        .cat-info-card .ci-val { font-size:12px; color:#333; line-height:1.6; }
+        .inv-result-box { background:linear-gradient(135deg,#1e3c72,#2a5298); color:white; padding:18px; border-radius:14px; text-align:center; margin:8px 0; }
+        .inv-big-num { font-size:36px; font-weight:700; margin:6px 0; }
+        .inv-label { font-size:12px; opacity:0.85; }
+        .toggle-row { display:flex; align-items:center; gap:12px; margin-bottom:12px; padding:12px 15px; background:#f8f9fa; border-radius:10px; border:2px solid #e0e0e0; cursor:pointer; }
+        .toggle-row:hover { border-color:#1e3c72; background:#e8f0fe; }
+        .toggle-row input[type="checkbox"] { width:18px; height:18px; cursor:pointer; flex-shrink:0; }
+        .toggle-label { font-size:13px; font-weight:600; color:#333; flex:1; }
+        .comune-wrap { position:relative; }
+        .comune-suggestions { position:absolute; top:100%; left:0; right:0; background:white; border:2px solid #1e3c72; border-top:none; border-radius:0 0 10px 10px; z-index:100; max-height:200px; overflow-y:auto; display:none; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
+        .sug-item { padding:9px 14px; cursor:pointer; font-size:13px; border-bottom:1px solid #eee; }
+        .sug-item:hover { background:#e3f2fd; color:#1e3c72; font-weight:600; }
+        .sug-cat { display:inline-block; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:700; color:white; margin-right:5px; }
+        .sug-prov { font-size:11px; color:#888; float:right; }
+        .suds-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(155px,1fr)); gap:10px; margin-top:12px; }
+        .suds-card { background:#f0f8ff; border:2px solid #b3d4f0; border-radius:12px; padding:12px; text-align:center; }
+        .suds-icon { font-size:26px; margin-bottom:5px; }
+        .suds-name { font-size:12px; font-weight:700; color:#1e3c72; margin-bottom:4px; }
+        .suds-desc { font-size:11px; color:#555; line-height:1.3; }
         @media print {
             body { background: white !important; }
             .back-button, .calc-button, .menu-button, .pdf-btn,
@@ -406,24 +458,180 @@
         <!-- MENU PRINCIPALE -->
         <div id="main-menu" class="page active">
             <h2>Menu Principale</h2>
-            <div class="menu-grid">
-                <button class="menu-button" onclick="showPage('efflussi-stramazzo')">Efflussi a Stramazzo</button>
-                <button class="menu-button" onclick="showPage('efflussi-battente')">Efflussi a Battente</button>
-                <button class="menu-button" onclick="showPage('calcolo-portata-menu')">Calcolo Portata in Moto Uniforme</button>
-                <button class="menu-button" onclick="showPage('sifone')">Manufatto Sifone Idraulico</button>
-                <button class="menu-button" onclick="showPage('sfioratore')">Manufatto Sfioratore Laterale</button>
-                <button class="menu-button" onclick="showPage('verifica-sifonamento')">Verifica Sifonamento</button>
-                <button class="menu-button" onclick="showPage('potenza-pompa')">⚡ Potenza Pompa</button>
-                <button class="menu-button" onclick="showPage('energia-consumata')">🔋 Energia Consumata</button>
-                <button class="menu-button" onclick="showPage('conversioni')">🔄 Conversioni Unità di Misura</button>
-                <button class="menu-button" onclick="showPage('reti-idriche-menu')">🔵 Reti Idriche</button>
-                <button class="menu-button" onclick="showPage('colpo-ariete')">💥 Colpo d'Ariete</button>
-                <button class="menu-button" onclick="showPage('svuotamento-serbatoio')">⏱️ Svuotamento Serbatoio</button>
-                <button class="menu-button" onclick="showPage('curva-durata')">📊 Curva di Durata Portate</button>
-                <button class="menu-button" onclick="showPage('bacino-idrografico')">🌧️ Bacino Idrografico</button>
-                <button class="menu-button" onclick="showPage('numero-reynolds')">🔬 Numero di Reynolds</button>
+
+            <div class="menu-section">
+                <div class="menu-section-title">🌊 Idraulica Canali</div>
+                <div class="menu-grid-compact">
+                    <button class="menu-button-sm" onclick="showPage('calcolo-portata-menu')">📐 Portata in Moto Uniforme</button>
+                    <button class="menu-button-sm" onclick="showPage('numero-reynolds')">🔬 Numero di Reynolds</button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-title">🏗️ Manufatti Idraulici</div>
+                <div class="menu-grid-compact">
+                    <button class="menu-button-sm" onclick="showPage('efflussi-stramazzo')">📊 Efflussi a Stramazzo</button>
+                    <button class="menu-button-sm" onclick="showPage('efflussi-battente')">💧 Efflussi a Battente</button>
+                    <button class="menu-button-sm" onclick="showPage('sifone')">🔄 Sifone Idraulico</button>
+                    <button class="menu-button-sm" onclick="showPage('sfioratore')">↗️ Sfioratore Laterale</button>
+                    <button class="menu-button-sm" onclick="showPage('verifica-sifonamento')">⚠️ Verifica Sifonamento</button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-title">🔵 Reti Idriche e Impianti</div>
+                <div class="menu-grid-compact">
+                    <button class="menu-button-sm" onclick="showPage('reti-idriche-menu')">🔵 Perdite di Carico</button>
+                    <button class="menu-button-sm" onclick="showPage('colpo-ariete')">💥 Colpo d'Ariete</button>
+                    <button class="menu-button-sm" onclick="showPage('potenza-pompa')">⚡ Potenza Pompa</button>
+                    <button class="menu-button-sm" onclick="showPage('energia-consumata')">🔋 Energia Consumata</button>
+                    <button class="menu-button-sm" onclick="showPage('svuotamento-serbatoio')">⏱️ Svuotamento Serbatoio</button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-title">🌧️ Idrologia</div>
+                <div class="menu-grid-compact">
+                    <button class="menu-button-sm" onclick="showPage('bacino-idrografico')">🌧️ Bacino Idrografico</button>
+                    <button class="menu-button-sm" onclick="showPage('curva-durata')">📊 Curva di Durata Portate</button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-title">🌿 Normativa Regionale</div>
+                <div class="menu-grid-compact">
+                    <button class="menu-button-sm menu-button-new" onclick="showPage('invarianza-lombardia')">🌿 Invarianza Idrologica – Lombardia</button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-title">🔄 Utilità</div>
+                <div class="menu-grid-compact">
+                    <button class="menu-button-sm" onclick="showPage('conversioni')">🔄 Conversioni Unità di Misura</button>
+                </div>
             </div>
         </div>
+        <!-- INVARIANZA IDROLOGICA LOMBARDIA -->
+        <div id="invarianza-lombardia" class="page">
+            <button class="back-button" onclick="showPage('main-menu')">← Indietro</button>
+            <h2>🌿 Invarianza Idrologica – Lombardia</h2>
+
+            <div class="info-box">
+                <strong>Rif. normativo:</strong> R.R. n. 7/2017 e s.m.i. (R.R. n. 8/2019, R.R. n. 3/2025).<br>
+                Calcolo del <strong>volume minimo di laminazione</strong> – metodo semplificato art. 12.<br>
+                ⚠️ Verificare sempre la categoria del comune nell'Allegato C del R.R. 7/2017 o sul portale INVID di Regione Lombardia.
+            </div>
+
+            <div class="cat-info-row">
+                <div class="cat-info-card A">
+                    <div class="ci-title">⬤ Area A</div>
+                    <div class="ci-val">Alta criticità<br><strong>10 l/s/ha</strong><br><strong>800 m³/ha</strong></div>
+                </div>
+                <div class="cat-info-card B">
+                    <div class="ci-title">⬤ Area B</div>
+                    <div class="ci-val">Media criticità<br><strong>20 l/s/ha</strong><br><strong>500 m³/ha</strong></div>
+                </div>
+                <div class="cat-info-card C">
+                    <div class="ci-title">⬤ Area C</div>
+                    <div class="ci-val">Bassa criticità<br><strong>40 l/s/ha</strong><br><strong>400 m³/ha</strong></div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Cerca il comune dell'intervento (Lombardia)</label>
+                <div class="comune-wrap">
+                    <input type="text" id="inv-comune" placeholder="Digita il nome del comune..." oninput="suggerisciComuni()" onblur="setTimeout(hideSuggerimenti,200)" autocomplete="off">
+                    <div class="comune-suggestions" id="inv-suggestions"></div>
+                </div>
+                <div class="unit" id="inv-comune-cat-info" style="margin-top:6px;"></div>
+            </div>
+
+            <div class="input-group">
+                <label>Categoria area – Allegato C R.R. 7/2017</label>
+                <select id="inv-categoria" onchange="calcInvarianza()">
+                    <option value="">— Seleziona (o usa ricerca comune sopra) —</option>
+                    <option value="A">Area A – Alta criticità · 10 l/s/ha · 800 m³/ha</option>
+                    <option value="B">Area B – Media criticità · 20 l/s/ha · 500 m³/ha</option>
+                    <option value="C">Area C – Bassa criticità · 40 l/s/ha · 400 m³/ha</option>
+                </select>
+            </div>
+
+            <label class="toggle-row" for="inv-pgt">
+                <input type="checkbox" id="inv-pgt" onchange="onPgtChange()">
+                <span class="toggle-label">🏙️ Intervento in ambito di <strong>trasformazione PGT</strong> → forza automaticamente Area A (normativa)</span>
+            </label>
+
+            <div class="input-group">
+                <label>Superficie totale dell'intervento (m²)</label>
+                <input type="number" id="inv-area-tot" placeholder="Es. 5000" min="0" oninput="calcInvarianza()">
+                <div class="unit">Superficie complessiva del lotto/area d'intervento in m²</div>
+            </div>
+
+            <div class="input-group">
+                <label>Coefficiente di deflusso medio ponderale φ</label>
+                <select id="inv-phi" onchange="onPhiChange()">
+                    <option value="0.10">0,10 – Aree verdi / parchi</option>
+                    <option value="0.20">0,20 – Aree agricole</option>
+                    <option value="0.30">0,30 – Misto verde/edificato (bassa densità)</option>
+                    <option value="0.50">0,50 – Residenziale (media densità)</option>
+                    <option value="0.70" selected>0,70 – Residenziale (alta densità)</option>
+                    <option value="0.85">0,85 – Commerciale / industriale</option>
+                    <option value="0.95">0,95 – Completamente impermeabilizzato</option>
+                    <option value="custom">Valore personalizzato...</option>
+                </select>
+            </div>
+            <div class="input-group" id="inv-phi-custom-group" style="display:none;">
+                <label>Coefficiente φ personalizzato (0.01 – 1.00)</label>
+                <input type="number" id="inv-phi-custom" placeholder="0.70" min="0.01" max="1" step="0.01" oninput="calcInvarianza()">
+            </div>
+
+            <label class="toggle-row" for="inv-geologia">
+                <input type="checkbox" id="inv-geologia" onchange="calcInvarianza()">
+                <span class="toggle-label">🪨 Disponibili <strong>prove geologiche di permeabilità</strong> e sistema a <strong>sola infiltrazione</strong> nel suolo (nessuno scarico a ricettore) → riduzione volume del <strong>30%</strong> (art. 12 c. 4 R.R. 7/2017)</span>
+            </label>
+
+            <div id="inv-results" class="results">
+                <h3 style="color:#1e3c72;margin-bottom:15px;">📋 Risultati del calcolo</h3>
+                <div style="text-align:center;margin-bottom:14px;">
+                    <div style="font-size:11px;color:#666;margin-bottom:5px;">CATEGORIA DI RIFERIMENTO</div>
+                    <span class="cat-badge" id="inv-res-cat">—</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+                    <div class="inv-result-box">
+                        <div class="inv-label">Superficie impermeabile</div>
+                        <div class="inv-big-num" id="inv-res-aimp">—</div>
+                        <div class="inv-label">m²</div>
+                    </div>
+                    <div class="inv-result-box">
+                        <div class="inv-label">Portata max scaricabile</div>
+                        <div class="inv-big-num" id="inv-res-qmax">—</div>
+                        <div class="inv-label">l/s</div>
+                    </div>
+                </div>
+                <div class="inv-result-box" style="background:linear-gradient(135deg,#1a7a4a,#27ae60);">
+                    <div class="inv-label">VOLUME MINIMO DI LAMINAZIONE</div>
+                    <div class="inv-big-num" id="inv-res-vol">—</div>
+                    <div class="inv-label" id="inv-res-vol-note">m³</div>
+                </div>
+                <div id="inv-res-detail" style="margin-top:14px;padding:14px;background:#f5f7fa;border-radius:10px;font-size:13px;color:#333;line-height:1.8;"></div>
+            </div>
+
+            <div style="margin-top:30px;">
+                <h3 style="color:#1e3c72;margin-bottom:10px;">🌿 Dispositivi SUDS – Sistemi Urbani di Drenaggio Sostenibile</h3>
+                <div class="info-box">Dispositivi per la gestione sostenibile delle acque meteoriche (Allegato L – R.R. 7/2017). Possono concorrere al volume di laminazione richiesto.</div>
+                <div class="suds-grid">
+                    <div class="suds-card"><div class="suds-icon">🏊</div><div class="suds-name">Vasca di Laminazione</div><div class="suds-desc">Serbatoio interrato o a cielo aperto con scarico regolato</div></div>
+                    <div class="suds-card"><div class="suds-icon">🌱</div><div class="suds-name">Trincea Drenante</div><div class="suds-desc">Scavo con ghiaia che favorisce infiltrazione e invaso temporaneo</div></div>
+                    <div class="suds-card"><div class="suds-icon">🪟</div><div class="suds-name">Pavimentazione Permeabile</div><div class="suds-desc">Superfici drenanti che consentono il passaggio al sottosuolo</div></div>
+                    <div class="suds-card"><div class="suds-icon">🌿</div><div class="suds-name">Tetto Verde</div><div class="suds-desc">Copertura vegetata che ritarda e riduce il deflusso pluviale</div></div>
+                    <div class="suds-card"><div class="suds-icon">💧</div><div class="suds-name">Giardino Pluviale</div><div class="suds-desc">Area vegetata depressa per raccolta e infiltrazione piogge</div></div>
+                    <div class="suds-card"><div class="suds-icon">🕳️</div><div class="suds-name">Pozzo Perdente</div><div class="suds-desc">Dispersione nel sottosuolo – solo se permeabilità sufficiente</div></div>
+                    <div class="suds-card"><div class="suds-icon">🌊</div><div class="suds-name">Bacino di Ritenzione</div><div class="suds-desc">Vasca a cielo aperto con scarico a portata controllata</div></div>
+                    <div class="suds-card"><div class="suds-icon">🔧</div><div class="suds-name">Laminatore / Regolatore</div><div class="suds-desc">Organo di controllo della portata uscente dall'invaso</div></div>
+                </div>
+            </div>
+        </div>
+
         <!-- SOTTO-MENU CALCOLO PORTATA -->
         <div id="calcolo-portata-menu" class="page">
             <button class="back-button" onclick="showPage('main-menu')">← Indietro</button>
@@ -3293,6 +3501,316 @@
                 '• Numero di Reynolds Re = ' + Math.round(Re).toLocaleString('it-IT') + '<br>' +
                 '• Regime: <strong>' + regime + '</strong>';
             document.getElementById('re-results').classList.add('show');
+        }
+
+        // ===== INVARIANZA IDROLOGICA LOMBARDIA =====
+        // Database comuni – categorie da Allegato C R.R. 7/2017 (dati indicativi, verificare sempre fonte ufficiale)
+        const comuniLombardia = [
+            // MILANO (MI)
+            {n:"Abbiategrasso",c:"A",p:"MI"},{n:"Arese",c:"A",p:"MI"},{n:"Arluno",c:"A",p:"MI"},
+            {n:"Assago",c:"A",p:"MI"},{n:"Bareggio",c:"A",p:"MI"},{n:"Baranzate",c:"A",p:"MI"},
+            {n:"Basiglio",c:"A",p:"MI"},{n:"Bernate Ticino",c:"A",p:"MI"},{n:"Binasco",c:"A",p:"MI"},
+            {n:"Bollate",c:"A",p:"MI"},{n:"Bresso",c:"A",p:"MI"},{n:"Buccinasco",c:"A",p:"MI"},
+            {n:"Busto Garolfo",c:"A",p:"MI"},{n:"Castano Primo",c:"A",p:"MI"},
+            {n:"Cernusco sul Naviglio",c:"A",p:"MI"},{n:"Cerro al Lambro",c:"A",p:"MI"},
+            {n:"Cerro Maggiore",c:"B",p:"MI"},{n:"Cesano Boscone",c:"A",p:"MI"},
+            {n:"Cesate",c:"B",p:"MI"},{n:"Cinisello Balsamo",c:"A",p:"MI"},
+            {n:"Cologno Monzese",c:"A",p:"MI"},{n:"Corbetta",c:"A",p:"MI"},
+            {n:"Cormano",c:"A",p:"MI"},{n:"Cornaredo",c:"A",p:"MI"},{n:"Corsico",c:"A",p:"MI"},
+            {n:"Cuggiono",c:"A",p:"MI"},{n:"Cusago",c:"A",p:"MI"},{n:"Cusano Milanino",c:"A",p:"MI"},
+            {n:"Dairago",c:"A",p:"MI"},{n:"Garbagnate Milanese",c:"A",p:"MI"},
+            {n:"Gessate",c:"A",p:"MI"},{n:"Inveruno",c:"A",p:"MI"},{n:"Inzago",c:"A",p:"MI"},
+            {n:"Lacchiarella",c:"A",p:"MI"},{n:"Lainate",c:"A",p:"MI"},{n:"Liscate",c:"A",p:"MI"},
+            {n:"Locate di Triulzi",c:"A",p:"MI"},{n:"Magenta",c:"A",p:"MI"},
+            {n:"Marcallo con Casone",c:"A",p:"MI"},{n:"Melegnano",c:"A",p:"MI"},
+            {n:"Melzo",c:"A",p:"MI"},{n:"Mesero",c:"A",p:"MI"},{n:"Milano",c:"A",p:"MI"},
+            {n:"Nerviano",c:"A",p:"MI"},{n:"Nosate",c:"A",p:"MI"},{n:"Novate Milanese",c:"A",p:"MI"},
+            {n:"Opera",c:"A",p:"MI"},{n:"Ossona",c:"A",p:"MI"},{n:"Paderno Dugnano",c:"A",p:"MI"},
+            {n:"Paullo",c:"A",p:"MI"},{n:"Pero",c:"A",p:"MI"},{n:"Peschiera Borromeo",c:"A",p:"MI"},
+            {n:"Pessano con Bornago",c:"A",p:"MI"},{n:"Pieve Emanuele",c:"A",p:"MI"},
+            {n:"Pioltello",c:"A",p:"MI"},{n:"Pregnana Milanese",c:"A",p:"MI"},
+            {n:"Rho",c:"A",p:"MI"},{n:"Robecchetto con Induno",c:"A",p:"MI"},
+            {n:"Robecco sul Naviglio",c:"A",p:"MI"},{n:"Rosate",c:"A",p:"MI"},
+            {n:"Rozzano",c:"A",p:"MI"},{n:"San Donato Milanese",c:"A",p:"MI"},
+            {n:"San Giuliano Milanese",c:"A",p:"MI"},{n:"Segrate",c:"A",p:"MI"},
+            {n:"Senago",c:"B",p:"MI"},{n:"Sesto San Giovanni",c:"A",p:"MI"},
+            {n:"Settala",c:"A",p:"MI"},{n:"Settimo Milanese",c:"A",p:"MI"},
+            {n:"Trezzano Rosa",c:"A",p:"MI"},{n:"Trezzano sul Naviglio",c:"A",p:"MI"},
+            {n:"Trezzo sull'Adda",c:"A",p:"MI"},{n:"Turbigo",c:"A",p:"MI"},
+            {n:"Vanzago",c:"A",p:"MI"},{n:"Vaprio d'Adda",c:"A",p:"MI"},
+            {n:"Vimodrone",c:"A",p:"MI"},{n:"Vittuone",c:"A",p:"MI"},
+            {n:"Zibido San Giacomo",c:"A",p:"MI"},
+            // MONZA E BRIANZA (MB)
+            {n:"Agrate Brianza",c:"A",p:"MB"},{n:"Arcore",c:"B",p:"MB"},
+            {n:"Besana in Brianza",c:"C",p:"MB"},{n:"Biassono",c:"B",p:"MB"},
+            {n:"Bovisio-Masciago",c:"B",p:"MB"},{n:"Brugherio",c:"A",p:"MB"},
+            {n:"Caponago",c:"A",p:"MB"},{n:"Carate Brianza",c:"B",p:"MB"},
+            {n:"Cesano Maderno",c:"B",p:"MB"},{n:"Concorezzo",c:"A",p:"MB"},
+            {n:"Desio",c:"B",p:"MB"},{n:"Giussano",c:"B",p:"MB"},
+            {n:"Lentate sul Seveso",c:"B",p:"MB"},{n:"Limbiate",c:"B",p:"MB"},
+            {n:"Lissone",c:"B",p:"MB"},{n:"Macherio",c:"B",p:"MB"},
+            {n:"Meda",c:"B",p:"MB"},{n:"Monza",c:"A",p:"MB"},{n:"Muggiò",c:"A",p:"MB"},
+            {n:"Nova Milanese",c:"A",p:"MB"},{n:"Renate",c:"C",p:"MB"},
+            {n:"Ronco Briantino",c:"A",p:"MB"},{n:"Seregno",c:"B",p:"MB"},
+            {n:"Seveso",c:"B",p:"MB"},{n:"Sovico",c:"B",p:"MB"},{n:"Sulbiate",c:"A",p:"MB"},
+            {n:"Triuggio",c:"B",p:"MB"},{n:"Usmate Velate",c:"B",p:"MB"},
+            {n:"Vedano al Lambro",c:"B",p:"MB"},{n:"Verano Brianza",c:"B",p:"MB"},
+            {n:"Villasanta",c:"A",p:"MB"},{n:"Vimercate",c:"A",p:"MB"},
+            // BERGAMO (BG)
+            {n:"Albino",c:"B",p:"BG"},{n:"Alzano Lombardo",c:"B",p:"BG"},
+            {n:"Ardesio",c:"C",p:"BG"},{n:"Bagnatica",c:"A",p:"BG"},{n:"Bergamo",c:"B",p:"BG"},
+            {n:"Brembate",c:"A",p:"BG"},{n:"Brusaporto",c:"A",p:"BG"},
+            {n:"Calvenzano",c:"A",p:"BG"},{n:"Capriate San Gervasio",c:"A",p:"BG"},
+            {n:"Caravaggio",c:"A",p:"BG"},{n:"Carobbio degli Angeli",c:"A",p:"BG"},
+            {n:"Castel Rozzone",c:"A",p:"BG"},{n:"Castione della Presolana",c:"C",p:"BG"},
+            {n:"Ciserano",c:"A",p:"BG"},{n:"Clusone",c:"C",p:"BG"},
+            {n:"Cologno al Serio",c:"A",p:"BG"},{n:"Cortenuova",c:"A",p:"BG"},
+            {n:"Curno",c:"A",p:"BG"},{n:"Dalmine",c:"A",p:"BG"},
+            {n:"Fara Gera d'Adda",c:"A",p:"BG"},{n:"Filago",c:"A",p:"BG"},
+            {n:"Fontanella",c:"A",p:"BG"},{n:"Ghisalba",c:"A",p:"BG"},
+            {n:"Gorlago",c:"A",p:"BG"},{n:"Grassobbio",c:"A",p:"BG"},
+            {n:"Grumello del Monte",c:"A",p:"BG"},{n:"Lallio",c:"A",p:"BG"},
+            {n:"Levate",c:"A",p:"BG"},{n:"Lovere",c:"C",p:"BG"},{n:"Lurano",c:"A",p:"BG"},
+            {n:"Madone",c:"A",p:"BG"},{n:"Mozzanica",c:"A",p:"BG"},{n:"Nembro",c:"B",p:"BG"},
+            {n:"Osio Sopra",c:"A",p:"BG"},{n:"Osio Sotto",c:"A",p:"BG"},
+            {n:"Paladina",c:"B",p:"BG"},{n:"Pedrengo",c:"B",p:"BG"},
+            {n:"Pontirolo Nuovo",c:"A",p:"BG"},{n:"Romano di Lombardia",c:"A",p:"BG"},
+            {n:"San Pellegrino Terme",c:"C",p:"BG"},{n:"Sarnico",c:"C",p:"BG"},
+            {n:"Scanzorosciate",c:"B",p:"BG"},{n:"Seriate",c:"A",p:"BG"},
+            {n:"Spirano",c:"A",p:"BG"},{n:"Stezzano",c:"A",p:"BG"},
+            {n:"Treviglio",c:"A",p:"BG"},{n:"Urgnano",c:"A",p:"BG"},
+            {n:"Verdello",c:"A",p:"BG"},{n:"Verdellino",c:"A",p:"BG"},
+            {n:"Zanica",c:"A",p:"BG"},{n:"Zogno",c:"C",p:"BG"},
+            // BRESCIA (BS)
+            {n:"Acquafredda",c:"A",p:"BS"},{n:"Adro",c:"B",p:"BS"},{n:"Alfianello",c:"A",p:"BS"},
+            {n:"Botticino",c:"B",p:"BS"},{n:"Bovezzo",c:"B",p:"BS"},{n:"Brescia",c:"A",p:"BS"},
+            {n:"Calcinato",c:"A",p:"BS"},{n:"Capriano del Colle",c:"A",p:"BS"},
+            {n:"Carpenedolo",c:"A",p:"BS"},{n:"Castenedolo",c:"A",p:"BS"},
+            {n:"Cellatica",c:"B",p:"BS"},{n:"Chiari",c:"A",p:"BS"},{n:"Cologne",c:"B",p:"BS"},
+            {n:"Concesio",c:"B",p:"BS"},{n:"Corzano",c:"A",p:"BS"},{n:"Dello",c:"A",p:"BS"},
+            {n:"Desenzano del Garda",c:"C",p:"BS"},{n:"Erbusco",c:"B",p:"BS"},
+            {n:"Flero",c:"A",p:"BS"},{n:"Gambara",c:"A",p:"BS"},
+            {n:"Gardone Riviera",c:"C",p:"BS"},{n:"Gardone Val Trompia",c:"C",p:"BS"},
+            {n:"Gargnano",c:"C",p:"BS"},{n:"Ghedi",c:"A",p:"BS"},{n:"Gussago",c:"B",p:"BS"},
+            {n:"Leno",c:"A",p:"BS"},{n:"Lonato del Garda",c:"B",p:"BS"},
+            {n:"Mairano",c:"A",p:"BS"},{n:"Manerba del Garda",c:"C",p:"BS"},
+            {n:"Manerbio",c:"A",p:"BS"},{n:"Mazzano",c:"A",p:"BS"},
+            {n:"Montichiari",c:"A",p:"BS"},{n:"Montirone",c:"A",p:"BS"},
+            {n:"Offlaga",c:"A",p:"BS"},{n:"Orzinuovi",c:"A",p:"BS"},
+            {n:"Ospitaletto",c:"A",p:"BS"},{n:"Passirano",c:"B",p:"BS"},
+            {n:"Pavone del Mella",c:"A",p:"BS"},{n:"Poncarale",c:"A",p:"BS"},
+            {n:"Pontevico",c:"A",p:"BS"},{n:"Puegnago sul Garda",c:"C",p:"BS"},
+            {n:"Rezzato",c:"A",p:"BS"},{n:"Rodengo-Saiano",c:"B",p:"BS"},
+            {n:"Roncadelle",c:"A",p:"BS"},{n:"Rovato",c:"B",p:"BS"},{n:"Salò",c:"C",p:"BS"},
+            {n:"San Zeno Naviglio",c:"A",p:"BS"},{n:"Sirmione",c:"C",p:"BS"},
+            {n:"Soiano del Lago",c:"C",p:"BS"},
+            // VARESE (VA)
+            {n:"Angera",c:"B",p:"VA"},{n:"Arcisate",c:"B",p:"VA"},{n:"Besnate",c:"A",p:"VA"},
+            {n:"Busto Arsizio",c:"A",p:"VA"},{n:"Cardano al Campo",c:"A",p:"VA"},
+            {n:"Cassano Magnago",c:"A",p:"VA"},{n:"Castellanza",c:"A",p:"VA"},
+            {n:"Castronno",c:"B",p:"VA"},{n:"Cavaria con Premezzo",c:"A",p:"VA"},
+            {n:"Fagnano Olona",c:"A",p:"VA"},{n:"Gallarate",c:"A",p:"VA"},
+            {n:"Germignaga",c:"C",p:"VA"},{n:"Gorla Maggiore",c:"A",p:"VA"},
+            {n:"Gorla Minore",c:"A",p:"VA"},{n:"Jerago con Orago",c:"A",p:"VA"},
+            {n:"Laveno-Mombello",c:"C",p:"VA"},{n:"Lonate Pozzolo",c:"A",p:"VA"},
+            {n:"Luino",c:"C",p:"VA"},{n:"Malnate",c:"B",p:"VA"},
+            {n:"Olgiate Olona",c:"A",p:"VA"},{n:"Origgio",c:"A",p:"VA"},
+            {n:"Porto Ceresio",c:"C",p:"VA"},{n:"Saronno",c:"A",p:"VA"},
+            {n:"Sesto Calende",c:"B",p:"VA"},{n:"Solaro",c:"A",p:"VA"},
+            {n:"Somma Lombardo",c:"A",p:"VA"},{n:"Tradate",c:"B",p:"VA"},{n:"Varese",c:"B",p:"VA"},
+            // COMO (CO)
+            {n:"Albese con Cassano",c:"B",p:"CO"},{n:"Arosio",c:"B",p:"CO"},
+            {n:"Bellagio",c:"C",p:"CO"},{n:"Brenna",c:"B",p:"CO"},{n:"Cadorago",c:"B",p:"CO"},
+            {n:"Cantù",c:"B",p:"CO"},{n:"Cermenate",c:"B",p:"CO"},{n:"Cernobbio",c:"C",p:"CO"},
+            {n:"Como",c:"B",p:"CO"},{n:"Dongo",c:"C",p:"CO"},{n:"Erba",c:"B",p:"CO"},
+            {n:"Figino Serenza",c:"B",p:"CO"},{n:"Gravedona ed Uniti",c:"C",p:"CO"},
+            {n:"Inverigo",c:"B",p:"CO"},{n:"Lipomo",c:"B",p:"CO"},{n:"Lomazzo",c:"B",p:"CO"},
+            {n:"Mariano Comense",c:"B",p:"CO"},{n:"Menaggio",c:"C",p:"CO"},
+            {n:"Montorfano",c:"B",p:"CO"},{n:"Novedrate",c:"B",p:"CO"},
+            {n:"Olgiate Comasco",c:"B",p:"CO"},{n:"Orsenigo",c:"B",p:"CO"},
+            {n:"Senna Comasco",c:"B",p:"CO"},{n:"Tremezzo",c:"C",p:"CO"},
+            {n:"Tremezzina",c:"C",p:"CO"},{n:"Veniano",c:"B",p:"CO"},
+            {n:"Villa Guardia",c:"B",p:"CO"},
+            // LECCO (LC)
+            {n:"Airuno",c:"A",p:"LC"},{n:"Ballabio",c:"C",p:"LC"},{n:"Bellano",c:"C",p:"LC"},
+            {n:"Brivio",c:"A",p:"LC"},{n:"Calolziocorte",c:"B",p:"LC"},
+            {n:"Casatenovo",c:"B",p:"LC"},{n:"Cernusco Lombardone",c:"B",p:"LC"},
+            {n:"Lecco",c:"B",p:"LC"},{n:"Mandello del Lario",c:"C",p:"LC"},
+            {n:"Merate",c:"B",p:"LC"},{n:"Missaglia",c:"B",p:"LC"},{n:"Oggiono",c:"B",p:"LC"},
+            {n:"Olginate",c:"A",p:"LC"},{n:"Osnago",c:"B",p:"LC"},{n:"Robbiate",c:"A",p:"LC"},
+            // LODI (LO)
+            {n:"Borghetto Lodigiano",c:"A",p:"LO"},{n:"Brembio",c:"A",p:"LO"},
+            {n:"Casalpusterlengo",c:"A",p:"LO"},{n:"Castiglione d'Adda",c:"A",p:"LO"},
+            {n:"Castiraga Vidardo",c:"A",p:"LO"},{n:"Codogno",c:"A",p:"LO"},
+            {n:"Cornegliano Laudense",c:"A",p:"LO"},{n:"Crespiatica",c:"A",p:"LO"},
+            {n:"Livraga",c:"A",p:"LO"},{n:"Lodi",c:"A",p:"LO"},{n:"Lodi Vecchio",c:"A",p:"LO"},
+            {n:"Maleo",c:"A",p:"LO"},{n:"Marudo",c:"A",p:"LO"},{n:"Massalengo",c:"A",p:"LO"},
+            {n:"Merlino",c:"A",p:"LO"},{n:"Montanaso Lombardo",c:"A",p:"LO"},
+            {n:"Mulazzano",c:"A",p:"LO"},{n:"Orio Litta",c:"A",p:"LO"},
+            {n:"Ossago Lodigiano",c:"A",p:"LO"},{n:"San Colombano al Lambro",c:"A",p:"LO"},
+            {n:"San Fiorano",c:"A",p:"LO"},{n:"San Martino in Strada",c:"A",p:"LO"},
+            {n:"Sant'Angelo Lodigiano",c:"A",p:"LO"},{n:"Secugnago",c:"A",p:"LO"},
+            {n:"Tavazzano con Villavesco",c:"A",p:"LO"},{n:"Turano Lodigiano",c:"A",p:"LO"},
+            {n:"Villanova del Sillaro",c:"A",p:"LO"},{n:"Zelo Buon Persico",c:"A",p:"LO"},
+            // CREMONA (CR)
+            {n:"Agnadello",c:"A",p:"CR"},{n:"Capergnanica",c:"A",p:"CR"},
+            {n:"Capralba",c:"A",p:"CR"},{n:"Casalbuttano ed Uniti",c:"A",p:"CR"},
+            {n:"Casal Cremasco",c:"A",p:"CR"},{n:"Casalmaggiore",c:"A",p:"CR"},
+            {n:"Castelleone",c:"A",p:"CR"},{n:"Crema",c:"A",p:"CR"},{n:"Cremona",c:"A",p:"CR"},
+            {n:"Dovera",c:"A",p:"CR"},{n:"Montodine",c:"A",p:"CR"},{n:"Offanengo",c:"A",p:"CR"},
+            {n:"Pandino",c:"A",p:"CR"},{n:"Persico Dosimo",c:"A",p:"CR"},
+            {n:"Pizzighettone",c:"A",p:"CR"},{n:"Rivolta d'Adda",c:"A",p:"CR"},
+            {n:"Romanengo",c:"A",p:"CR"},{n:"Soncino",c:"A",p:"CR"},{n:"Soresina",c:"A",p:"CR"},
+            {n:"Spino d'Adda",c:"A",p:"CR"},{n:"Trescore Cremasco",c:"A",p:"CR"},
+            {n:"Vailate",c:"A",p:"CR"},
+            // MANTOVA (MN)
+            {n:"Asola",c:"A",p:"MN"},{n:"Bagnolo San Vito",c:"A",p:"MN"},
+            {n:"Canneto sull'Oglio",c:"A",p:"MN"},{n:"Castel Goffredo",c:"A",p:"MN"},
+            {n:"Castiglione delle Stiviere",c:"A",p:"MN"},{n:"Ceresara",c:"A",p:"MN"},
+            {n:"Curtatone",c:"A",p:"MN"},{n:"Gazoldo degli Ippoliti",c:"A",p:"MN"},
+            {n:"Goito",c:"A",p:"MN"},{n:"Gonzaga",c:"A",p:"MN"},{n:"Guidizzolo",c:"A",p:"MN"},
+            {n:"Mantova",c:"A",p:"MN"},{n:"Marmirolo",c:"A",p:"MN"},{n:"Medole",c:"A",p:"MN"},
+            {n:"Moglia",c:"A",p:"MN"},{n:"Monzambano",c:"A",p:"MN"},{n:"Ostiglia",c:"A",p:"MN"},
+            {n:"Pegognaga",c:"A",p:"MN"},{n:"Porto Mantovano",c:"A",p:"MN"},
+            {n:"Quistello",c:"A",p:"MN"},{n:"Revere",c:"A",p:"MN"},{n:"Rodigo",c:"A",p:"MN"},
+            {n:"Roncoferraro",c:"A",p:"MN"},{n:"Roverbella",c:"A",p:"MN"},
+            {n:"Sabbioneta",c:"A",p:"MN"},{n:"San Benedetto Po",c:"A",p:"MN"},
+            {n:"San Giorgio Bigarello",c:"A",p:"MN"},{n:"Sermide e Felonica",c:"A",p:"MN"},
+            {n:"Solferino",c:"A",p:"MN"},{n:"Suzzara",c:"A",p:"MN"},
+            {n:"Viadana",c:"A",p:"MN"},{n:"Volta Mantovana",c:"A",p:"MN"},
+            // PAVIA (PV)
+            {n:"Battuda",c:"A",p:"PV"},{n:"Borgarello",c:"A",p:"PV"},{n:"Broni",c:"B",p:"PV"},
+            {n:"Carbonara al Ticino",c:"A",p:"PV"},{n:"Casorate Primo",c:"A",p:"PV"},
+            {n:"Cava Manara",c:"A",p:"PV"},{n:"Certosa di Pavia",c:"A",p:"PV"},
+            {n:"Codevilla",c:"C",p:"PV"},{n:"Copiano",c:"A",p:"PV"},{n:"Dorno",c:"A",p:"PV"},
+            {n:"Garlasco",c:"A",p:"PV"},{n:"Lardirago",c:"A",p:"PV"},{n:"Mede",c:"A",p:"PV"},
+            {n:"Mortara",c:"A",p:"PV"},{n:"Pavia",c:"A",p:"PV"},{n:"Robbio",c:"A",p:"PV"},
+            {n:"San Martino Siccomario",c:"A",p:"PV"},{n:"Siziano",c:"A",p:"PV"},
+            {n:"Stradella",c:"B",p:"PV"},{n:"Tromello",c:"A",p:"PV"},
+            {n:"Vigevano",c:"A",p:"PV"},{n:"Voghera",c:"B",p:"PV"},
+            {n:"Zerbolò",c:"A",p:"PV"},{n:"Zinasco",c:"A",p:"PV"},
+            // SONDRIO (SO) – prevalentemente montano
+            {n:"Ardenno",c:"C",p:"SO"},{n:"Berbenno di Valtellina",c:"C",p:"SO"},
+            {n:"Bormio",c:"C",p:"SO"},{n:"Campodolcino",c:"C",p:"SO"},
+            {n:"Chiavenna",c:"C",p:"SO"},{n:"Chiesa in Valmalenco",c:"C",p:"SO"},
+            {n:"Dubino",c:"B",p:"SO"},{n:"Gordona",c:"C",p:"SO"},{n:"Lanzada",c:"C",p:"SO"},
+            {n:"Livigno",c:"C",p:"SO"},{n:"Madesimo",c:"C",p:"SO"},{n:"Morbegno",c:"C",p:"SO"},
+            {n:"Novate Mezzola",c:"B",p:"SO"},{n:"Samolaco",c:"B",p:"SO"},
+            {n:"Sondrio",c:"C",p:"SO"},{n:"Talamona",c:"C",p:"SO"},{n:"Teglio",c:"C",p:"SO"},
+            {n:"Tirano",c:"C",p:"SO"},{n:"Traona",c:"C",p:"SO"},
+            {n:"Valdisotto",c:"C",p:"SO"},{n:"Valfurva",c:"C",p:"SO"}
+        ];
+
+        const catColors = {A:'#e74c3c', B:'#e67e22', C:'#27ae60'};
+        const catNames = {A:'alta criticità', B:'media criticità', C:'bassa criticità'};
+
+        function normInv(s) {
+            return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[''']/g,"'").trim();
+        }
+
+        function suggerisciComuni() {
+            const val = normInv(document.getElementById('inv-comune').value);
+            const sugDiv = document.getElementById('inv-suggestions');
+            if (val.length < 2) { sugDiv.style.display = 'none'; return; }
+
+            const matches = comuniLombardia
+                .filter(r => normInv(r.n).includes(val))
+                .sort((a,b) => {
+                    const an = normInv(a.n), bn = normInv(b.n);
+                    if (an.startsWith(val) && !bn.startsWith(val)) return -1;
+                    if (!an.startsWith(val) && bn.startsWith(val)) return 1;
+                    return an.localeCompare(bn);
+                }).slice(0,10);
+
+            if (!matches.length) {
+                sugDiv.innerHTML = '<div class="sug-item" style="color:#888;font-style:italic;">Comune non trovato – seleziona manualmente la categoria</div>';
+            } else {
+                sugDiv.innerHTML = matches.map(r =>
+                    `<div class="sug-item" onclick="selezionaComune('${r.n.replace(/'/g,"\\'")}','${r.c}','${r.p}')">
+                        <span class="sug-cat" style="background:${catColors[r.c]};">${r.c}</span>${r.n}
+                        <span class="sug-prov">${r.p}</span>
+                    </div>`
+                ).join('');
+            }
+            sugDiv.style.display = 'block';
+        }
+
+        function hideSuggerimenti() {
+            document.getElementById('inv-suggestions').style.display = 'none';
+        }
+
+        function selezionaComune(nome, cat, prov) {
+            document.getElementById('inv-comune').value = nome;
+            document.getElementById('inv-suggestions').style.display = 'none';
+            const pgt = document.getElementById('inv-pgt').checked;
+            const catEff = pgt ? 'A' : cat;
+            document.getElementById('inv-categoria').value = catEff;
+            document.getElementById('inv-comune-cat-info').innerHTML =
+                `<strong>${nome} (${prov})</strong> → <span style="color:${catColors[cat]};font-weight:700;">Area ${cat}</span> – ${catNames[cat]}` +
+                (pgt ? ' | ⚠️ Forzato Area A per trasformazione PGT' : '');
+            calcInvarianza();
+        }
+
+        function onPgtChange() {
+            const pgt = document.getElementById('inv-pgt').checked;
+            const sel = document.getElementById('inv-categoria');
+            if (pgt) { sel.value = 'A'; sel.disabled = true; }
+            else { sel.disabled = false; }
+            calcInvarianza();
+        }
+
+        function onPhiChange() {
+            const v = document.getElementById('inv-phi').value;
+            document.getElementById('inv-phi-custom-group').style.display = (v === 'custom') ? 'block' : 'none';
+            calcInvarianza();
+        }
+
+        function calcInvarianza() {
+            const cat = document.getElementById('inv-categoria').value;
+            if (!cat) return;
+            const areaTot = parseFloat(document.getElementById('inv-area-tot').value);
+            if (isNaN(areaTot) || areaTot <= 0) { document.getElementById('inv-results').classList.remove('show'); return; }
+
+            const phiSel = document.getElementById('inv-phi').value;
+            let phi = (phiSel === 'custom')
+                ? parseFloat(document.getElementById('inv-phi-custom').value)
+                : parseFloat(phiSel);
+            if (isNaN(phi) || phi <= 0 || phi > 1) return;
+
+            const geologia = document.getElementById('inv-geologia').checked;
+            const catP = {A:{udom:10,volMin:800},B:{udom:20,volMin:500},C:{udom:40,volMin:400}};
+            const p = catP[cat];
+
+            const aImp_m2 = areaTot * phi;
+            const aImp_ha = aImp_m2 / 10000;
+            const qMax = p.udom * aImp_ha;
+            const volBase = p.volMin * aImp_ha;
+            const volFin = geologia ? volBase * 0.70 : volBase;
+
+            document.getElementById('inv-res-cat').textContent = 'Area ' + cat;
+            document.getElementById('inv-res-cat').className = 'cat-badge cat-' + cat;
+            document.getElementById('inv-res-aimp').textContent = Math.round(aImp_m2).toLocaleString('it-IT');
+            document.getElementById('inv-res-qmax').textContent = qMax.toFixed(2);
+            document.getElementById('inv-res-vol').textContent = Math.round(volFin).toLocaleString('it-IT');
+            document.getElementById('inv-res-vol-note').textContent =
+                'm³  (metodo semplificato art. 12 R.R. 7/2017)' +
+                (geologia ? '  –  riduzione 30% applicata (infiltrazione + prove geol.)' : '');
+
+            let note300 = (areaTot <= 300)
+                ? '<br>⚠️ <strong>Superficie ≤ 300 m²:</strong> si applicano i requisiti minimi semplificati (Allegato L) – valutare scarico sul suolo senza invaso.'
+                : '';
+            document.getElementById('inv-res-detail').innerHTML =
+                '<strong>Dettaglio calcolo:</strong><br>' +
+                '• Area totale intervento = ' + areaTot.toLocaleString('it-IT') + ' m²<br>' +
+                '• Coeff. deflusso φ = ' + phi.toFixed(2) + '<br>' +
+                '• Sup. impermeabile = ' + areaTot.toLocaleString('it-IT') + ' × ' + phi.toFixed(2) + ' = ' + Math.round(aImp_m2).toLocaleString('it-IT') + ' m² (' + aImp_ha.toFixed(4) + ' ha)<br>' +
+                '• Categoria: Area ' + cat + ' – ' + catNames[cat] + '<br>' +
+                '• Limite udometrico: ' + p.udom + ' l/s/ha → Qmax = ' + p.udom + ' × ' + aImp_ha.toFixed(4) + ' = <strong>' + qMax.toFixed(2) + ' l/s</strong><br>' +
+                '• Volume base: ' + p.volMin + ' m³/ha × ' + aImp_ha.toFixed(4) + ' ha = ' + volBase.toFixed(2) + ' m³<br>' +
+                (geologia ? '• Riduzione 30% (prove geol. + infiltrazione): ' + volBase.toFixed(2) + ' × 0,70 = ' + volFin.toFixed(2) + ' m³<br>' : '') +
+                '• <strong>Volume minimo da realizzare = ' + Math.round(volFin).toLocaleString('it-IT') + ' m³</strong>' + note300;
+
+            document.getElementById('inv-results').classList.add('show');
         }
 
         // ===== ESPORTAZIONE PDF =====
