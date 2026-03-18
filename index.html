@@ -533,7 +533,7 @@
                 </div>
                 <div class="cat-info-card C">
                     <div class="ci-title">⬤ Area C</div>
-                    <div class="ci-val">Bassa criticità<br><strong>40 l/s/ha</strong><br><strong>400 m³/ha</strong></div>
+                    <div class="ci-val">Bassa criticità<br><strong>nessun limite art. 8</strong><br><strong>400 m³/ha</strong></div>
                 </div>
             </div>
 
@@ -552,7 +552,7 @@
                     <option value="">— Seleziona (o usa ricerca comune sopra) —</option>
                     <option value="A">Area A – Alta criticità · 10 l/s/ha · 800 m³/ha</option>
                     <option value="B">Area B – Media criticità · 20 l/s/ha · 500 m³/ha</option>
-                    <option value="C">Area C – Bassa criticità · 40 l/s/ha · 400 m³/ha</option>
+                    <option value="C">Area C – Bassa criticità · nessun limite art. 8 · 400 m³/ha</option>
                 </select>
             </div>
 
@@ -570,15 +570,12 @@
             <div class="input-group">
                 <label>Coefficiente di deflusso medio ponderale φ</label>
                 <select id="inv-phi" onchange="onPhiChange()">
-                    <option value="0.10">0,10 – Aree verdi / parchi</option>
-                    <option value="0.20">0,20 – Aree agricole</option>
-                    <option value="0.30">0,30 – Misto verde/edificato (bassa densità)</option>
-                    <option value="0.50">0,50 – Residenziale (media densità)</option>
-                    <option value="0.70" selected>0,70 – Residenziale (alta densità)</option>
-                    <option value="0.85">0,85 – Commerciale / industriale</option>
-                    <option value="0.95">0,95 – Completamente impermeabilizzato</option>
-                    <option value="custom">Valore personalizzato...</option>
+                    <option value="0.30">0,30 – Aree permeabili (verde, giardini, prati) – art. 9 c. 3-bis</option>
+                    <option value="0.70">0,70 – Tetti verdi, pavim. semipermeabili – art. 9 c. 3-bis</option>
+                    <option value="1.00">1,00 – Coperture, pavim. impermeabili (strade, parcheggi) – art. 9 c. 3-bis</option>
+                    <option value="custom">Coefficiente ponderale personalizzato (mix di superfici)...</option>
                 </select>
+                <div class="unit">I valori φ sono definiti all'art. 9 c. 3-bis del R.R. 7/2017. Per lotti misti usare il valore personalizzato.</div>
             </div>
             <div class="input-group" id="inv-phi-custom-group" style="display:none;">
                 <label>Coefficiente φ personalizzato (0.01 – 1.00)</label>
@@ -3778,37 +3775,42 @@
             if (isNaN(phi) || phi <= 0 || phi > 1) return;
 
             const geologia = document.getElementById('inv-geologia').checked;
-            const catP = {A:{udom:10,volMin:800},B:{udom:20,volMin:500},C:{udom:40,volMin:400}};
+            // udom: null = nessun limite art. 8 (Area C)
+            const catP = {A:{udom:10,volMin:800},B:{udom:20,volMin:500},C:{udom:null,volMin:400}};
             const p = catP[cat];
 
             const aImp_m2 = areaTot * phi;
             const aImp_ha = aImp_m2 / 10000;
-            const qMax = p.udom * aImp_ha;
+            const qMax = (p.udom !== null) ? p.udom * aImp_ha : null;
             const volBase = p.volMin * aImp_ha;
             const volFin = geologia ? volBase * 0.70 : volBase;
 
             document.getElementById('inv-res-cat').textContent = 'Area ' + cat;
             document.getElementById('inv-res-cat').className = 'cat-badge cat-' + cat;
             document.getElementById('inv-res-aimp').textContent = Math.round(aImp_m2).toLocaleString('it-IT');
-            document.getElementById('inv-res-qmax').textContent = qMax.toFixed(2);
+            document.getElementById('inv-res-qmax').textContent = qMax !== null ? qMax.toFixed(2) : '—';
             document.getElementById('inv-res-vol').textContent = Math.round(volFin).toLocaleString('it-IT');
             document.getElementById('inv-res-vol-note').textContent =
                 'm³  (metodo semplificato art. 12 R.R. 7/2017)' +
                 (geologia ? '  –  riduzione 30% applicata (infiltrazione + prove geol.)' : '');
 
+            const qMaxLine = (qMax !== null)
+                ? '• Limite udometrico art. 8: ' + p.udom + ' l/s/ha → Qmax = ' + p.udom + ' × ' + aImp_ha.toFixed(4) + ' = <strong>' + qMax.toFixed(2) + ' l/s</strong><br>'
+                : '• Limite udometrico art. 8: <strong>non definito per Area C</strong> (si applicano requisiti semplificati)<br>';
             let note300 = (areaTot <= 300)
-                ? '<br>⚠️ <strong>Superficie ≤ 300 m²:</strong> si applicano i requisiti minimi semplificati (Allegato L) – valutare scarico sul suolo senza invaso.'
+                ? '<br>⚠️ <strong>Superficie ≤ 300 m²:</strong> requisiti minimi semplificati (Allegato L) – valutare scarico sul suolo senza invaso obbligatorio.'
                 : '';
             document.getElementById('inv-res-detail').innerHTML =
                 '<strong>Dettaglio calcolo:</strong><br>' +
                 '• Area totale intervento = ' + areaTot.toLocaleString('it-IT') + ' m²<br>' +
-                '• Coeff. deflusso φ = ' + phi.toFixed(2) + '<br>' +
+                '• Coeff. deflusso φ = ' + phi.toFixed(2) + ' (art. 9 c. 3-bis R.R. 7/2017)<br>' +
                 '• Sup. impermeabile = ' + areaTot.toLocaleString('it-IT') + ' × ' + phi.toFixed(2) + ' = ' + Math.round(aImp_m2).toLocaleString('it-IT') + ' m² (' + aImp_ha.toFixed(4) + ' ha)<br>' +
                 '• Categoria: Area ' + cat + ' – ' + catNames[cat] + '<br>' +
-                '• Limite udometrico: ' + p.udom + ' l/s/ha → Qmax = ' + p.udom + ' × ' + aImp_ha.toFixed(4) + ' = <strong>' + qMax.toFixed(2) + ' l/s</strong><br>' +
-                '• Volume base: ' + p.volMin + ' m³/ha × ' + aImp_ha.toFixed(4) + ' ha = ' + volBase.toFixed(2) + ' m³<br>' +
+                qMaxLine +
+                '• Volume minimo base: ' + p.volMin + ' m³/ha × ' + aImp_ha.toFixed(4) + ' ha = ' + volBase.toFixed(2) + ' m³<br>' +
                 (geologia ? '• Riduzione 30% (prove geol. + infiltrazione): ' + volBase.toFixed(2) + ' × 0,70 = ' + volFin.toFixed(2) + ' m³<br>' : '') +
-                '• <strong>Volume minimo da realizzare = ' + Math.round(volFin).toLocaleString('it-IT') + ' m³</strong>' + note300;
+                '• <strong>Volume minimo da realizzare = ' + Math.round(volFin).toLocaleString('it-IT') + ' m³</strong>' + note300 +
+                '<br><br><em>⚠️ I volumi sono calcolati con metodo semplificato. Per impermeabilizzazione alta in Area A/B occorre la Procedura Dettagliata (Allegato G). Il coefficiente P (Allegato C) non è applicato. Verificare sempre con la normativa vigente.</em>';
 
             document.getElementById('inv-results').classList.add('show');
         }
