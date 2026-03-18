@@ -582,6 +582,12 @@
                 <input type="number" id="inv-phi-custom" placeholder="0.70" min="0.01" max="1" step="0.01" oninput="calcInvarianza()">
             </div>
 
+            <div class="input-group">
+                <label>Coefficiente P – Allegato C R.R. 7/2017 (riduzione pluviometrica locale)</label>
+                <input type="number" id="inv-coeff-p" placeholder="1.00" value="1.00" min="0.01" max="1.00" step="0.01" oninput="calcInvarianza()">
+                <div class="unit">Fattore riduttivo pluviometrico del comune (Allegato C, tabella per sottozone). Predefinito = <strong>1,00</strong> (nessuna riduzione, massima cautela). Valore esatto disponibile sull'applicativo <strong>INVID</strong> di Regione Lombardia o nell'Allegato C del R.R. 8/2019. Intervallo tipico: 0,50 – 1,00.</div>
+            </div>
+
             <label class="toggle-row" for="inv-geologia">
                 <input type="checkbox" id="inv-geologia" onchange="calcInvarianza()">
                 <span class="toggle-label">🪨 Disponibili <strong>prove geologiche di permeabilità</strong> e sistema a <strong>sola infiltrazione</strong> nel suolo (nessuno scarico a ricettore) → riduzione volume del <strong>30%</strong> (art. 12 c. 4 R.R. 7/2017)</span>
@@ -3775,6 +3781,8 @@
             if (isNaN(phi) || phi <= 0 || phi > 1) return;
 
             const geologia = document.getElementById('inv-geologia').checked;
+            let coeffP = parseFloat(document.getElementById('inv-coeff-p').value);
+            if (isNaN(coeffP) || coeffP <= 0 || coeffP > 1) coeffP = 1.0;
             // udom: null = nessun limite art. 8 (Area C)
             const catP = {A:{udom:10,volMin:800},B:{udom:20,volMin:500},C:{udom:null,volMin:400}};
             const p = catP[cat];
@@ -3782,7 +3790,7 @@
             const aImp_m2 = areaTot * phi;
             const aImp_ha = aImp_m2 / 10000;
             const qMax = (p.udom !== null) ? p.udom * aImp_ha : null;
-            const volBase = p.volMin * aImp_ha;
+            const volBase = p.volMin * coeffP * aImp_ha;   // P applicato qui
             const volFin = geologia ? volBase * 0.70 : volBase;
 
             document.getElementById('inv-res-cat').textContent = 'Area ' + cat;
@@ -3792,11 +3800,15 @@
             document.getElementById('inv-res-vol').textContent = Math.round(volFin).toLocaleString('it-IT');
             document.getElementById('inv-res-vol-note').textContent =
                 'm³  (metodo semplificato art. 12 R.R. 7/2017)' +
-                (geologia ? '  –  riduzione 30% applicata (infiltrazione + prove geol.)' : '');
+                (coeffP < 1 ? '  ·  P = ' + coeffP.toFixed(2) : '') +
+                (geologia ? '  ·  riduzione 30% (infiltrazione + prove geol.)' : '');
 
             const qMaxLine = (qMax !== null)
                 ? '• Limite udometrico art. 8: ' + p.udom + ' l/s/ha → Qmax = ' + p.udom + ' × ' + aImp_ha.toFixed(4) + ' = <strong>' + qMax.toFixed(2) + ' l/s</strong><br>'
                 : '• Limite udometrico art. 8: <strong>non definito per Area C</strong> (si applicano requisiti semplificati)<br>';
+            const pLine = '• Coeff. P (All. C) = <strong>' + coeffP.toFixed(2) + '</strong>' +
+                (coeffP === 1.0 ? ' (predefinito – verificare valore comunale su INVID)' : '') + '<br>' +
+                '• Volume parametrico = ' + p.volMin + ' m³/ha × ' + coeffP.toFixed(2) + ' × ' + aImp_ha.toFixed(4) + ' ha = ' + volBase.toFixed(2) + ' m³<br>';
             let note300 = (areaTot <= 300)
                 ? '<br>⚠️ <strong>Superficie ≤ 300 m²:</strong> requisiti minimi semplificati (Allegato L) – valutare scarico sul suolo senza invaso obbligatorio.'
                 : '';
@@ -3807,10 +3819,10 @@
                 '• Sup. impermeabile = ' + areaTot.toLocaleString('it-IT') + ' × ' + phi.toFixed(2) + ' = ' + Math.round(aImp_m2).toLocaleString('it-IT') + ' m² (' + aImp_ha.toFixed(4) + ' ha)<br>' +
                 '• Categoria: Area ' + cat + ' – ' + catNames[cat] + '<br>' +
                 qMaxLine +
-                '• Volume minimo base: ' + p.volMin + ' m³/ha × ' + aImp_ha.toFixed(4) + ' ha = ' + volBase.toFixed(2) + ' m³<br>' +
+                pLine +
                 (geologia ? '• Riduzione 30% (prove geol. + infiltrazione): ' + volBase.toFixed(2) + ' × 0,70 = ' + volFin.toFixed(2) + ' m³<br>' : '') +
                 '• <strong>Volume minimo da realizzare = ' + Math.round(volFin).toLocaleString('it-IT') + ' m³</strong>' + note300 +
-                '<br><br><em>⚠️ I volumi sono calcolati con metodo semplificato. Per impermeabilizzazione alta in Area A/B occorre la Procedura Dettagliata (Allegato G). Il coefficiente P (Allegato C) non è applicato. Verificare sempre con la normativa vigente.</em>';
+                '<br><br><em>⚠️ Calcolo con metodo semplificato. Per impermeabilizzazione alta in Area A/B occorre la Procedura Dettagliata (Allegato G). Verificare sempre con la normativa vigente.</em>';
 
             document.getElementById('inv-results').classList.add('show');
         }
