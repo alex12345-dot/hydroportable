@@ -585,7 +585,7 @@
             <div class="input-group">
                 <label>Coefficiente P – Allegato C R.R. 7/2017 (riduzione pluviometrica locale)</label>
                 <input type="number" id="inv-coeff-p" placeholder="1.00" value="1.00" min="0.01" max="1.00" step="0.01" oninput="calcInvarianza()">
-                <div class="unit">Fattore riduttivo pluviometrico del comune (Allegato C, tabella per sottozone). Predefinito = <strong>1,00</strong> (nessuna riduzione, massima cautela). Valore esatto disponibile sull'applicativo <strong>INVID</strong> di Regione Lombardia o nell'Allegato C del R.R. 8/2019. Intervallo tipico: 0,50 – 1,00.</div>
+                <div class="unit">Fattore riduttivo pluviometrico del comune (Allegato C R.R. 8/2019). Viene <strong>auto-popolato per zona pluviometrica</strong> quando si seleziona il comune. ⚠️ Il valore indicato è una stima per provincia – <strong>verifica il valore esatto per ogni comune</strong> sull'applicativo <strong>INVID</strong> di Regione Lombardia o nell'Allegato C del R.R. 8/2019. Intervallo tipico: 0,50 – 1,00.</div>
             </div>
 
             <label class="toggle-row" for="inv-geologia">
@@ -3707,6 +3707,25 @@
         const catColors = {A:'#e74c3c', B:'#e67e22', C:'#27ae60'};
         const catNames = {A:'alta criticità', B:'media criticità', C:'bassa criticità'};
 
+        // Coefficiente P per zona pluviometrica (Allegato C R.R. 8/2019)
+        // Basato sulle sottozone pluviometriche ARPA Lombardia.
+        // ⚠️ VALORI INDICATIVI PER ZONA GEOGRAFICA – verificare il valore esatto
+        //    per ogni comune sull'applicativo INVID (Regione Lombardia).
+        const pvByProv = {
+            SO: 1.00,  // Valtellina/Valchiavenna – zona alpina, precipitazioni elevate
+            VA: 1.00,  // Prealpi varesine / Verbano
+            CO: 1.00,  // Lario / prealpi comasco-lecchesi
+            LC: 1.00,  // Prealpi lecchesi / Lario
+            BG: 1.00,  // Prealpi orobiche e pianura bergamasca
+            BS: 1.00,  // Prealpi bresciane, Garda e pianura bresciana
+            MI: 1.00,  // Alta pianura milanese
+            MB: 1.00,  // Brianza / alta pianura
+            LO: 0.80,  // Bassa pianura lodigiana
+            PV: 0.80,  // Pianura pavese
+            CR: 0.75,  // Bassa pianura cremonese
+            MN: 0.75   // Bassa pianura mantovana (zona più siccitosa della regione)
+        };
+
         function normInv(s) {
             return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[''']/g,"'").trim();
         }
@@ -3748,9 +3767,18 @@
             const pgt = document.getElementById('inv-pgt').checked;
             const catEff = pgt ? 'A' : cat;
             document.getElementById('inv-categoria').value = catEff;
+
+            // Auto-popola P dall'Allegato C (zona pluviometrica per provincia)
+            const pv = pvByProv[prov] ?? 1.00;
+            document.getElementById('inv-coeff-p').value = pv.toFixed(2);
+            const pvTag = pv < 1.00
+                ? `<span style="color:#e67e22;font-weight:600;">P = ${pv.toFixed(2)}</span>`
+                : `<span style="color:#27ae60;font-weight:600;">P = 1,00</span>`;
+
             document.getElementById('inv-comune-cat-info').innerHTML =
                 `<strong>${nome} (${prov})</strong> → <span style="color:${catColors[cat]};font-weight:700;">Area ${cat}</span> – ${catNames[cat]}` +
-                (pgt ? ' | ⚠️ Forzato Area A per trasformazione PGT' : '');
+                (pgt ? ' | ⚠️ Forzato Area A per trasformazione PGT' : '') +
+                ` &nbsp;|&nbsp; ${pvTag} <span style="font-size:11px;color:#888;">(Allegato C – zona prov. ${prov}) ⚠️ verifica su INVID</span>`;
             calcInvarianza();
         }
 
